@@ -13,6 +13,7 @@ class HRReportingApp {
         // this.app.use(this.globalMiddleware.bind(this));
 
         this.setupRoutes();
+        this.setupCronJobs();
     }
 
     // Global middleware
@@ -36,14 +37,29 @@ class HRReportingApp {
                     this.app.use(path, middleware);
                 }
 
+                // Apply any GET request handlers for the routes
                 if (typeof handleGetRequest === 'function') {
                     this.app.get(path, handleGetRequest);
                 }
 
+                // Apply any POST request handlers for the routes
                 if (typeof handlePostRequest === 'function') {
                     this.app.post(path, handlePostRequest);
                 }
             });
+        });
+    }
+
+    setupCronJobs() {
+        const cronPath = path.join(__dirname, 'crons');
+
+        fs.readdirSync(cronPath).forEach((file) => {
+            const cronJob = require(path.join(cronPath, file));
+
+            // Assuming each cron job file exports a run() method
+            if (typeof cronJob.run === 'function') {
+                cronJob.run();
+            }
         });
     }
 
