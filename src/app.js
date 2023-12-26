@@ -9,6 +9,16 @@ class HRReportingApp {
         // Use environment variables
         require('dotenv').config();
 
+        // Serve static files (including fonts) from the "fonts" folder
+        this.app.use(express.static(path.join(__dirname, 'public')));
+
+        // Middleware for parsing JSON in request body
+        this.app.use(express.json());
+
+        // Configure EJS as the view engine
+        this.app.set('view engine', 'ejs');
+        this.app.set('views', path.join(__dirname, 'views'));
+
         // Global middleware
         // this.app.use(this.globalMiddleware.bind(this));
 
@@ -72,4 +82,4 @@ class HRReportingApp {
 }
 
 const app = new HRReportingApp();
-app.start();
+app.start(); ``

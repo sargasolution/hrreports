@@ -1,14 +1,14 @@
 const ReportingController = require('../controllers/reportingController');
 
 class ReportingRoute {
-    static handleGetRequest(req, res) {
-        ReportingController.handleGetRequest(req, res);
+    static handlePunchDataInOutGetRequest(req, res) {
+        ReportingController.handlePunchDataInOutGetRequest(req, res);
     }
 }
 
 module.exports = [
     {
-        path: `/reporting`,
-        handleGetRequest: ReportingRoute.handleGetRequest,
-    },
+        path: `/reporting/punch-details-in-out`,
+        handleGetRequest: ReportingRoute.handlePunchDataInOutGetRequest,
+    }
 ];

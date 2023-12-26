@@ -1,7 +1,11 @@
-export const DOWNLOAD_PUNCH_DATA = `https://api.etimeoffice.com/api/DownloadPunchData`;
+const DOWNLOAD_PUNCH_DATA = `/DownloadPunchData`;
+const DOWNLOAD_IN_OUT_PUNCH_DATA = `/DownloadInOutPunchData`;
+const DOWNLOAD_PUNCH_DATA_MCID = `/DownloadPunchDataMCID`
+const DOWNLOAD_LAST_PUNCH_DATA = `/DownloadLastPunchData`
 
-export const DOWNLOAD_IN_OUT_PUNCH_DATA = `https://api.etimeoffice.com/api/DownloadInOutPunchData`;
-
-export const DOWNLOAD_PUNCH_DATA_MCID = `https://api.etimeoffice.com/api/DownloadPunchDataMCID`
-
-export const DOWNLOAD_LAST_PUNCH_DATA = `https://api.etimeoffice.com/api/DownloadLastPunchData`
+module.exports = {
+    DOWNLOAD_PUNCH_DATA,
+    DOWNLOAD_IN_OUT_PUNCH_DATA,
+    DOWNLOAD_PUNCH_DATA_MCID,
+    DOWNLOAD_LAST_PUNCH_DATA
+}
