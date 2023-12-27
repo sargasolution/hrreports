@@ -28,8 +28,19 @@ function getLastSevenFormattedDates() {
     return formattedDates;
 }
 
+function parseMinutesToHoursDuration(minutes) {
+    if (typeof minutes !== 'number' || isNaN(minutes)) {
+        return 'Invalid input. Please provide a valid number of minutes.';
+    }
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    const formattedHours = String(hours).padStart(2, '0');
+    const formattedMinutes = String(remainingMinutes).padStart(2, '0');
+    return `${formattedHours}:${formattedMinutes}`;
+}
 
 module.exports = {
     convertArrayOfDatesToEmployeePunchObj,
-    getLastSevenFormattedDates
+    getLastSevenFormattedDates,
+    parseMinutesToHoursDuration
 }
