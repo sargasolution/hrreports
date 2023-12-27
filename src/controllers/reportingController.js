@@ -39,38 +39,22 @@ class ReportingController {
                 const employeePunchInfo = {};
 
                 arrOfPunchData.forEach((punch) => {
-                    if (punch.Empcode in employeePunchInfo) {
-                        if (punch.DateString in employeePunchInfo[punch.Empcode].punchData) {
-                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].INTime = punch.INTime;
-                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].OUTTime = punch.OUTTime;
-
-                            if (punch.INTime && punch.INTime !== DEFAULT_IN_OUT_TIME && punch.OUTTime && punch.OUTTime !== DEFAULT_IN_OUT_TIME) {
-                                const date1 = parse(punch.INTime, 'HH:mm', new Date());
-                                const date2 = parse(punch.OUTTime, 'HH:mm', new Date());
-                                const minutesDifference = differenceInMinutes(date2, date1);
-                                employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMins = minutesDifference;
-                                employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMinsShow = parseMinutesToHoursDuration(minutesDifference);
-                                employeePunchInfo[punch.Empcode].totalMinsWorked += minutesDifference;
-                            } else {
-                                employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMins = 0;
-                            }
-                        }
-                    } else {
+                    if (!(punch.Empcode in employeePunchInfo)) {
                         employeePunchInfo[punch.Empcode] = new EmployeeWeeklyPunchEntity(punch.Name, convertArrayOfDatesToEmployeePunchObj(formattedDates))
-                        if (punch.DateString in employeePunchInfo[punch.Empcode].punchData) {
-                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].INTime = punch.INTime;
-                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].OUTTime = punch.OUTTime;
+                    }
+                    if (punch.DateString in employeePunchInfo[punch.Empcode].punchData) {
+                        employeePunchInfo[punch.Empcode].punchData[punch.DateString].INTime = punch.INTime;
+                        employeePunchInfo[punch.Empcode].punchData[punch.DateString].OUTTime = punch.OUTTime;
 
-                            if (punch.INTime && punch.INTime !== DEFAULT_IN_OUT_TIME && punch.OUTTime && punch.OUTTime !== DEFAULT_IN_OUT_TIME) {
-                                const date1 = parse(punch.INTime, 'HH:mm', new Date());
-                                const date2 = parse(punch.OUTTime, 'HH:mm', new Date());
-                                const minutesDifference = differenceInMinutes(date2, date1);
-                                employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMins = minutesDifference;
-                                employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMinsShow = parseMinutesToHoursDuration(minutesDifference);
-                                employeePunchInfo[punch.Empcode].totalMinsWorked += minutesDifference;
-                            } else {
-                                employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMins = 0;
-                            }
+                        if (punch.INTime && punch.INTime !== DEFAULT_IN_OUT_TIME && punch.OUTTime && punch.OUTTime !== DEFAULT_IN_OUT_TIME) {
+                            const date1 = parse(punch.INTime, 'HH:mm', new Date());
+                            const date2 = parse(punch.OUTTime, 'HH:mm', new Date());
+                            const minutesDifference = differenceInMinutes(date2, date1);
+                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMins = minutesDifference;
+                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMinsShow = parseMinutesToHoursDuration(minutesDifference);
+                            employeePunchInfo[punch.Empcode].totalMinsWorked += minutesDifference;
+                        } else {
+                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMins = 0;
                         }
                     }
                 })
