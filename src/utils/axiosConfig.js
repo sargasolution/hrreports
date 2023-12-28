@@ -3,8 +3,9 @@ const axios = require('axios');
 const apiInstance = axios.create({
     baseURL: 'https://api.etimeoffice.com/api',
     timeout: 10000,
-    headers: {
-        'Authorization': `Basic ${process.env.AUTH_TOKEN}`
+    auth: {
+        username: process.env.AUTH_USER_NAME,
+        password: process.env.AUTH_USER_PASSWORD,
     },
 });
 
