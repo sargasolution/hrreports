@@ -1,7 +1,7 @@
 const axiosInstance = require('../utils/axiosConfig');
 const { format, subDays, parse, differenceInMinutes } = require('date-fns');
 const { DOWNLOAD_IN_OUT_PUNCH_DATA } = require('../constants/urls/vendorUrls.js');
-const { DEFAULT_IN_OUT_TIME } = require("../constants/enums/employeeEnums.js");
+const { DEFAULT_IN_OUT_TIME, WEEKLY_REPORT_PDF_OPTIONS } = require("../constants/enums/employeeEnums.js");
 const { getLastSevenFormattedDates, convertArrayOfDatesToEmployeePunchObj, parseMinutesToHoursDuration } = require("../utils/employeeUtils")
 const { EmployeeWeeklyPunchEntity } = require("../constants/models/employee.js");
 const { generatePdf } = require("../services/generatePdf.js");
@@ -65,28 +65,28 @@ class ReportingController {
                     punchObj.totalMinsWorkedShow = parseMinutesToHoursDuration(punchObj.totalMinsWorked)
                 }
 
-                // await generatePdf(path.join(__dirname, '..', 'views', 'reports', 'weekly.ejs'), {
-                //     employeePunchInfo: Object.values(employeePunchInfo),
-                //     tableHeaders: formattedDates.map((date) => ({
-                //         day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
-                //         date
-                //     })).reverse(),
-                //     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
-                // }, path.join(__dirname, '..', 'public', 'reports', 'output.pdf'))
-
-                return res.render("./reports/weekly", {
+                await generatePdf(path.join(__dirname, '..', 'views', 'reports', 'weekly.ejs'), {
                     employeePunchInfo: Object.values(employeePunchInfo),
                     tableHeaders: formattedDates.map((date) => ({
                         day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
                         date
                     })).reverse(),
                     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
-                })
+                }, path.join(__dirname, '..', 'public', 'reports', 'output.pdf'), WEEKLY_REPORT_PDF_OPTIONS)
 
-                // return res.json({
-                //     "Error": false,
-                //     "Msg": "Pdf generated successfully",
+                // return res.render("./reports/weekly", {
+                //     employeePunchInfo: Object.values(employeePunchInfo),
+                //     tableHeaders: formattedDates.map((date) => ({
+                //         day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
+                //         date
+                //     })).reverse(),
+                //     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
                 // })
+
+                return res.json({
+                    "Error": false,
+                    "Msg": "Pdf generated successfully",
+                })
             }
 
             return res.json(apiResponse)

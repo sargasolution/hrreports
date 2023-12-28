@@ -4,22 +4,12 @@ const ejs = require('ejs');
 const pdf = require('html-pdf');
 
 
-async function generatePdf(templatePath, templateData, outputPdfPath) {
+async function generatePdf(templatePath, templateData, outputPdfPath, pdfOptions) {
     try {
         const templateContent = await fsp.readFile(templatePath, { encoding: 'utf-8' });
 
         // Render the EJS template with data
         const renderedHtml = ejs.render(templateContent, templateData);
-
-        // PDF options with A4 size
-        const pdfOptions = {
-            "width": "15in",
-            "childProcessOptions": {
-                "detached": true
-            },
-            "orientation": "landscape",
-            "format": "Tabloid"
-        };
 
         // Generate PDF from the rendered HTML
         const pdfPromise = new Promise((resolve, reject) => {
