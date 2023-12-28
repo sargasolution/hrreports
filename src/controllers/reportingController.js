@@ -2,7 +2,7 @@ const axiosInstance = require('../utils/axiosConfig');
 const { format, subDays, parse, differenceInMinutes } = require('date-fns');
 const { DOWNLOAD_IN_OUT_PUNCH_DATA } = require('../constants/urls/vendorUrls.js');
 const { DEFAULT_IN_OUT_TIME, WEEKLY_REPORT_PDF_OPTIONS } = require("../constants/enums/employeeEnums.js");
-const { getLastSevenFormattedDates, convertArrayOfDatesToEmployeePunchObj, parseMinutesToHoursDuration } = require("../utils/employeeUtils")
+const { getFormattedDatesBetweenDateRange, convertArrayOfDatesToEmployeePunchObj, parseMinutesToHoursDuration } = require("../utils/employeeUtils")
 const { EmployeeWeeklyPunchEntity } = require("../constants/models/employee.js");
 const { generatePdf } = require("../services/generatePdf.js");
 const path = require('path');
@@ -33,7 +33,7 @@ class ReportingController {
             if (Array.isArray(arrOfPunchData) && arrOfPunchData.length) {
 
                 // Create an array to store the formatted dates
-                const formattedDates = getLastSevenFormattedDates();
+                const formattedDates = getFormattedDatesBetweenDateRange(sevenDaysAgo, today);
 
                 // create a map to store employee records with id as key and value as a object with name and punch data
                 const employeePunchInfo = {};
@@ -43,16 +43,17 @@ class ReportingController {
                         employeePunchInfo[punch.Empcode] = new EmployeeWeeklyPunchEntity(punch.Name, convertArrayOfDatesToEmployeePunchObj(formattedDates))
                     }
                     if (punch.DateString in employeePunchInfo[punch.Empcode].punchData) {
-                        employeePunchInfo[punch.Empcode].punchData[punch.DateString].INTime = punch.INTime;
-                        employeePunchInfo[punch.Empcode].punchData[punch.DateString].OUTTime = punch.OUTTime;
-
                         if (punch.INTime && punch.INTime !== DEFAULT_IN_OUT_TIME && punch.OUTTime && punch.OUTTime !== DEFAULT_IN_OUT_TIME) {
+                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].INTime = punch.INTime;
+                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].OUTTime = punch.OUTTime;
+
                             const date1 = parse(punch.INTime, 'HH:mm', new Date());
                             const date2 = parse(punch.OUTTime, 'HH:mm', new Date());
                             const minutesDifference = differenceInMinutes(date2, date1);
                             employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMins = minutesDifference;
                             employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMinsShow = parseMinutesToHoursDuration(minutesDifference);
                             employeePunchInfo[punch.Empcode].totalMinsWorked += minutesDifference;
+
                         } else {
                             employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMins = 0;
                         }
@@ -70,7 +71,7 @@ class ReportingController {
                 //     tableHeaders: formattedDates.map((date) => ({
                 //         day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
                 //         date
-                //     })).reverse(),
+                //     })),
                 //     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
                 // }, path.join(__dirname, '..', 'public', 'reports', 'output.pdf'), WEEKLY_REPORT_PDF_OPTIONS)
 
@@ -84,7 +85,7 @@ class ReportingController {
                     tableHeaders: formattedDates.map((date) => ({
                         day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
                         date
-                    })).reverse(),
+                    })),
                     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
                 })
 
