@@ -65,28 +65,29 @@ class ReportingController {
                     punchObj.totalMinsWorkedShow = parseMinutesToHoursDuration(punchObj.totalMinsWorked)
                 }
 
-                await generatePdf(path.join(__dirname, '..', 'views', 'reports', 'weekly.ejs'), {
-                    employeePunchInfo: Object.values(employeePunchInfo),
-                    tableHeaders: formattedDates.map((date) => ({
-                        day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
-                        date
-                    })).reverse(),
-                    defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
-                }, path.join(__dirname, '..', 'public', 'reports', 'output.pdf'), WEEKLY_REPORT_PDF_OPTIONS)
-
-                // return res.render("./reports/weekly", {
+                // await generatePdf(path.join(__dirname, '..', 'views', 'reports', 'weekly.ejs'), {
                 //     employeePunchInfo: Object.values(employeePunchInfo),
                 //     tableHeaders: formattedDates.map((date) => ({
                 //         day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
                 //         date
                 //     })).reverse(),
                 //     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
+                // }, path.join(__dirname, '..', 'public', 'reports', 'output.pdf'), WEEKLY_REPORT_PDF_OPTIONS)
+
+                // return res.json({
+                //     "Error": false,
+                //     "Msg": "Pdf generated successfully",
                 // })
 
-                return res.json({
-                    "Error": false,
-                    "Msg": "Pdf generated successfully",
+                return res.render("./reports/weekly", {
+                    employeePunchInfo: Object.values(employeePunchInfo),
+                    tableHeaders: formattedDates.map((date) => ({
+                        day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
+                        date
+                    })).reverse(),
+                    defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
                 })
+
             }
 
             return res.json(apiResponse)

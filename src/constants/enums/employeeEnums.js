@@ -6,7 +6,13 @@ const WEEKLY_REPORT_PDF_OPTIONS = {
         "detached": true
     },
     "orientation": "landscape",
-    "format": "Tabloid"
+    "format": "A4",
+    "header": {
+        "height": "4mm",
+    },
+    "footer": {
+        "height": "4mm",
+    },
 }
 
 module.exports = {
