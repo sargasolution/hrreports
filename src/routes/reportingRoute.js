@@ -1,14 +1,22 @@
 const ReportingController = require('../controllers/reportingController');
 
 class ReportingRoute {
-    static handlePunchDataInOutGetRequest(req, res) {
-        ReportingController.handlePunchDataInOutGetRequest(req, res);
+    static handlePunchDataInOutWeeklyGetRequest(req, res) {
+        ReportingController.handlePunchDataInOutWeeklyGetRequest(req, res);
+    }
+
+    static handlePunchDataInOutMonthlyGetRequest(req, res) {
+        ReportingController.handlePunchDataInOutMonthlyGetRequest(req, res);
     }
 }
 
 module.exports = [
     {
-        path: `/reporting/punch-details-in-out`,
-        handleGetRequest: ReportingRoute.handlePunchDataInOutGetRequest,
+        path: `/reporting/punch-details-in-out/week`,
+        handleGetRequest: ReportingRoute.handlePunchDataInOutWeeklyGetRequest,
+    },
+    {
+        path: `/reporting/punch-details-in-out/month`,
+        handleGetRequest: ReportingRoute.handlePunchDataInOutMonthlyGetRequest,
     }
 ];

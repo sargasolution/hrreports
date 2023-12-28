@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Montly Punch Report</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Public Sans", sans-serif;
+      }
+
+      @font-face {
+        font-family: "Public Sans";
+        src: local("Public Sans"),
+          url("../../public/fonts/PublicSans-Regular.ttf") format("truetype");
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Public Sans";
+        src: local("Public Sans"),
+          url("../../public/fonts/PublicSans-Regular.ttf") format("truetype");
+        font-weight: 500;
+      }
+
+      @font-face {
+        font-family: "Public Sans";
+        src: local("Public Sans"),
+          url("../../public/fonts/PublicSans-Medium.ttf") format("truetype");
+        font-weight: 600;
+      }
+
+      @font-face {
+        font-family: "Public Sans";
+        src: local("Public Sans"),
+          url("../../public/fonts/PublicSans-MediumItalic.ttf")
+            format("truetype");
+        font-weight: 600;
+        font-style: italic;
+      }
+
+      @font-face {
+        font-family: "Public Sans";
+        src: local("Public Sans"),
+          url("../../public/fonts/PublicSans-Bold.ttf") format("truetype");
+        font-weight: 700;
+      }
+    </style>
+
+    <style>
+      .table-container {
+        padding: 0 12px;
+      }
+
+      table {
+        border-spacing: 0;
+        border-collapse: separate;
+        border-radius: 2px;
+        border: 1px solid #e8ecfa;
+        overflow: hidden;
+        width: 100%;
+      }
+
+      table .first-column {
+        border-bottom: 1px solid #e8ecfa;
+      }
+
+      .first-column.employee-name {
+        white-space: nowrap;
+      }
+
+      table thead {
+        background-color: aliceblue;
+      }
+
+      table thead th {
+        border-bottom: 1px solid #e8ecfa;
+        border-right: 1px solid #e8ecfa;
+      }
+
+      table tbody td {
+        border-right: 1px solid #e8ecfa;
+        border-bottom: 1px solid #e8ecfa;
+      }
+
+      table tbody td:last-child {
+        border-right: 0;
+      }
+
+      table tbody tr:last-child td {
+        border-bottom: 0;
+      }
+
+      table tbody tr:last-child td:last-child {
+        border-right: 0;
+      }
+
+      table thead th {
+        font-size: 7px;
+        padding: 6px;
+        line-height: 10px;
+        font-weight: 600;
+      }
+
+      table tbody td {
+        font-weight: 600;
+        text-align: center;
+        font-size: 7px;
+        padding: 6px;
+        line-height: 10px;
+        font-weight: 400;
+      }
+
+      .employee-name {
+        word-wrap: break-word;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th colspan="2">
+              Working hours for <%= metaData.month %> , <%= metaData.year %>
+            </th>
+          </tr>
+          <tr>
+            <th class="first-column employee-name">Employee Name</th>
+            <th>Hrs</th>
+          </tr>
+        </thead>
+        <tbody>
+            <% for (let i = 0; i < employeePunchInfo.length; i++) { %> <% if (i >
+                0 && i % 30 === 0) { %>
+              </tbody>
+            </table>
+            <!-- Page break for the next section -->
+            <div style="page-break-before: always"></div>
+            <!-- Start a new table section with the same headers -->
+            <table>
+                <thead>
+                    <tr>
+                      <th colspan="2">
+                        Working hours for <%= metaData.month %> , <%= metaData.year %>
+                      </th>
+                    </tr>
+                    <tr>
+                      <th class="first-column employee-name">Employee Name</th>
+                      <th>Hrs</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                  <% } %>
+                  <tr>
+                    <td class="employee-name">
+                      <p><%= employeePunchInfo[i]?.name %></p>
+                    </td>
+                    <td>
+                      <%= employeePunchInfo[i].totalMinsWorked === 0 ? '0' :
+                      employeePunchInfo[i].totalMinsWorkedShow %>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
