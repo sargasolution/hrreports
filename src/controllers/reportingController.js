@@ -4,7 +4,7 @@ const { DOWNLOAD_IN_OUT_PUNCH_DATA } = require('../constants/urls/vendorUrls.js'
 const { DEFAULT_IN_OUT_TIME, WEEKLY_REPORT_PDF_OPTIONS, MONTHLY_REPORT_PDF_OPTIONS } = require("../constants/enums/employeeEnums.js");
 const { getFormattedDatesBetweenDateRange, convertArrayOfDatesToEmployeePunchObj, parseMinutesToHoursDuration } = require("../utils/employeeUtils")
 const { EmployeeWeeklyPunchEntity, EmployeeMonthlyPunchEntity } = require("../constants/models/employee.js");
-const { generatePdf } = require("../services/generatePdf.js");
+const { generatePdf, generateXlsx } = require("../services/fileGeneration");
 const path = require('path');
 
 class ReportingController {
@@ -143,28 +143,46 @@ class ReportingController {
                     punchObj.totalMinsWorkedShow = parseMinutesToHoursDuration(punchObj.totalMinsWorked)
                 }
 
-                // await generatePdf(path.join(__dirname, '..', 'views', 'reports', 'monthly.ejs'), {
-                //     employeePunchInfo: Object.values(employeePunchInfo),
-                //     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME,
-                //     metaData: {
-                //         month: format(today, 'MMMM'),
-                //         year: format(today, 'yyyy')
-                //     }
-                // }, path.join(__dirname, '..', 'public', 'reports', 'output_monthly.pdf'), MONTHLY_REPORT_PDF_OPTIONS)
 
-                // return res.json({
-                //     "Error": false,
-                //     "Msg": "Pdf generated successfully",
-                // })
+                const templatePath = path.join(__dirname, '..', 'views', 'reports', 'monthly.ejs');
 
-                return res.render("./reports/monthly", {
+                const pdfGenerationData = {
                     employeePunchInfo: Object.values(employeePunchInfo),
                     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME,
                     metaData: {
                         month: format(today, 'MMMM'),
                         year: format(today, 'yyyy')
                     }
+                };
+
+                const pdfDestinationPath = path.join(__dirname, '..', 'public', 'reports', 'output_monthly.pdf');
+
+                await generatePdf(templatePath, pdfGenerationData, pdfDestinationPath, MONTHLY_REPORT_PDF_OPTIONS)
+
+
+                const excelDestinationPath = path.join(__dirname, '..', 'public', 'reports', 'output_monthly.xlsx');
+
+                await generateXlsx(Object.values(employeePunchInfo), excelDestinationPath, {
+                    columns: [
+                        { header: 'Employee Name', key: 'name', width: 50 },
+                        { header: 'Hrs', key: 'totalMinsWorkedShow', width: 10 },
+                    ],
+                    sheetName: `Punch Report ${format(today, 'MMM')}, ${format(today, 'yyyy')}`
+                });
+
+                return res.json({
+                    "Error": false,
+                    "Msg": "Pdf and Excel sheet generated successfully",
                 })
+
+                // return res.render("./reports/monthly", {
+                //     employeePunchInfo: Object.values(employeePunchInfo),
+                //     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME,
+                //     metaData: {
+                //         month: format(today, 'MMMM'),
+                //         year: format(today, 'yyyy')
+                //     }
+                // })
             }
 
             return res.json(apiResponse)

@@ -1,7 +1,8 @@
 const fsp = require('fs/promises');
-// const fs = require('fs');
 const ejs = require('ejs');
 const pdf = require('html-pdf');
+const excel = require('exceljs');
+
 
 
 async function generatePdf(templatePath, templateData, outputPdfPath, pdfOptions) {
@@ -30,6 +31,25 @@ async function generatePdf(templatePath, templateData, outputPdfPath, pdfOptions
 }
 
 
+async function generateXlsx(excelGenerationData, outputExcelPath, excelConfig = {}) {
+    try {
+        // Create a new Excel workbook and worksheet
+        const workbook = new excel.Workbook();
+        const worksheet = workbook.addWorksheet(excelConfig?.sheetName);
+
+        worksheet.columns = excelConfig?.columns || [];
+        worksheet.addRows(excelGenerationData);
+
+        // Save the XLSX data to a file
+        await workbook.xlsx.writeFile(outputExcelPath);
+
+    } catch (err) {
+        throw err;
+    }
+}
+
+
 module.exports = {
-    generatePdf
+    generatePdf,
+    generateXlsx
 }
