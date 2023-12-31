@@ -4,13 +4,13 @@ const { DOWNLOAD_IN_OUT_PUNCH_DATA } = require('../constants/urls/vendorUrls.js'
 const { DEFAULT_IN_OUT_TIME, WEEKLY_REPORT_PDF_OPTIONS, MONTHLY_REPORT_PDF_OPTIONS } = require("../constants/enums/employeeEnums.js");
 const { getFormattedDatesBetweenDateRange, convertArrayOfDatesToEmployeePunchObj, parseMinutesToHoursDuration } = require("../utils/employeeUtils")
 const { EmployeeWeeklyPunchEntity, EmployeeMonthlyPunchEntity } = require("../constants/models/employee.js");
-const { generatePdf, generateXlsx } = require("../services/fileGeneration");
+const { generatePdf, generateWeeklyXlsx, generateMonthlyXlsx } = require("../services/fileGeneration");
 const path = require('path');
 
 class ReportingController {
     static async handlePunchDataInOutWeeklyGetRequest(req, res) {
         try {
-            const today = new Date();
+            const today = new Date("2023-12-23");
             const sevenDaysAgo = subDays(today, 6);
 
             const response = await axiosInstance.get(DOWNLOAD_IN_OUT_PUNCH_DATA, {
@@ -43,17 +43,18 @@ class ReportingController {
                         employeePunchInfo[punch.Empcode] = new EmployeeWeeklyPunchEntity(punch.Name, convertArrayOfDatesToEmployeePunchObj(formattedDates))
                     }
                     if (punch.DateString in employeePunchInfo[punch.Empcode].punchData) {
+                        employeePunchInfo[punch.Empcode].punchData[punch.DateString].INTime = punch.INTime;
+                        employeePunchInfo[punch.Empcode].punchData[punch.DateString].OUTTime = punch.OUTTime;
+                        employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMinsShow = "0"
                         if (punch.INTime && punch.INTime !== DEFAULT_IN_OUT_TIME && punch.OUTTime && punch.OUTTime !== DEFAULT_IN_OUT_TIME) {
-                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].INTime = punch.INTime;
-                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].OUTTime = punch.OUTTime;
-
                             const date1 = parse(punch.INTime, 'HH:mm', new Date());
                             const date2 = parse(punch.OUTTime, 'HH:mm', new Date());
                             const minutesDifference = differenceInMinutes(date2, date1);
                             employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMins = minutesDifference;
                             employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMinsShow = parseMinutesToHoursDuration(minutesDifference);
-                            employeePunchInfo[punch.Empcode].totalMinsWorked += minutesDifference;
-
+                            if (minutesDifference >= 0) {
+                                employeePunchInfo[punch.Empcode].totalMinsWorked += minutesDifference;
+                            }
                         } else {
                             employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMins = 0;
                         }
@@ -66,28 +67,40 @@ class ReportingController {
                     punchObj.totalMinsWorkedShow = parseMinutesToHoursDuration(punchObj.totalMinsWorked)
                 }
 
-                // await generatePdf(path.join(__dirname, '..', 'views', 'reports', 'weekly.ejs'), {
-                //     employeePunchInfo: Object.values(employeePunchInfo),
-                //     tableHeaders: formattedDates.map((date) => ({
-                //         day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
-                //         date
-                //     })),
-                //     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
-                // }, path.join(__dirname, '..', 'public', 'reports', 'output_weekly.pdf'), WEEKLY_REPORT_PDF_OPTIONS)
+                const templatePath = path.join(__dirname, '..', 'views', 'reports', 'weekly.ejs');
 
-                // return res.json({
-                //     "Error": false,
-                //     "Msg": "Pdf generated successfully",
-                // })
+                const destinationPdfPath = path.join(__dirname, '..', 'public', 'reports', 'output_weekly.pdf');
 
-                return res.render("./reports/weekly", {
+                await generatePdf(templatePath, {
                     employeePunchInfo: Object.values(employeePunchInfo),
                     tableHeaders: formattedDates.map((date) => ({
                         day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
                         date
                     })),
                     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
+                }, destinationPdfPath, WEEKLY_REPORT_PDF_OPTIONS)
+
+                const excelDestinationPath = path.join(__dirname, '..', 'public', 'reports', 'output_weekly.xlsx');
+
+
+                await generateWeeklyXlsx(employeePunchInfo, excelDestinationPath, {
+                    sheetName: `${format(sevenDaysAgo, 'dd-MM-yyyy')} to ${format(today, 'dd-MM-yyyy')}`,
+                    datesList: formattedDates,
+                });
+
+                return res.json({
+                    "Error": false,
+                    "Msg": "Pdf generated successfully",
                 })
+
+                // return res.render("./reports/weekly", {
+                //     employeePunchInfo: Object.values(employeePunchInfo),
+                //     tableHeaders: formattedDates.map((date) => ({
+                //         day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
+                //         date
+                //     })),
+                //     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
+                // })
 
             }
 
@@ -134,7 +147,9 @@ class ReportingController {
                         const date1 = parse(punch.INTime, 'HH:mm', new Date());
                         const date2 = parse(punch.OUTTime, 'HH:mm', new Date());
                         const minutesDifference = differenceInMinutes(date2, date1);
-                        employeePunchInfo[punch.Empcode].totalMinsWorked += minutesDifference;
+                        if (minutesDifference >= 0) {
+                            employeePunchInfo[punch.Empcode].totalMinsWorked += minutesDifference;
+                        }
                     }
                 });
 
@@ -162,7 +177,7 @@ class ReportingController {
 
                 const excelDestinationPath = path.join(__dirname, '..', 'public', 'reports', 'output_monthly.xlsx');
 
-                await generateXlsx(Object.values(employeePunchInfo), excelDestinationPath, {
+                await generateMonthlyXlsx(Object.values(employeePunchInfo), excelDestinationPath, {
                     columns: [
                         { header: 'Employee Name', key: 'name', width: 50 },
                         { header: 'Hrs', key: 'totalMinsWorkedShow', width: 10 },
