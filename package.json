@@ -11,6 +11,7 @@
   "author": "Dibya Mohan Acharya",
   "license": "ISC",
   "dependencies": {
+    "@getbrevo/brevo": "^2.0.0-beta.4",
     "axios": "^1.6.2",
     "date-fns": "^3.0.6",
     "dotenv": "^16.3.1",

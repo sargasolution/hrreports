@@ -6,6 +6,7 @@ const { getFormattedDatesBetweenDateRange, convertArrayOfDatesToEmployeePunchObj
 const { EmployeeWeeklyPunchEntity, EmployeeMonthlyPunchEntity } = require("../constants/models/employee.js");
 const { generatePdf, generateWeeklyXlsx, generateMonthlyXlsx } = require("../services/fileGeneration");
 const path = require('path');
+const EmailCommunication = require("../services/mailCommunication")
 
 class ReportingController {
     static async handlePunchDataInOutWeeklyGetRequest(req, res) {
@@ -87,6 +88,8 @@ class ReportingController {
                     sheetName: `${format(sevenDaysAgo, 'dd-MM-yyyy')} to ${format(today, 'dd-MM-yyyy')}`,
                     datesList: formattedDates,
                 });
+
+                await EmailCommunication.sendTransacionalMail();
 
                 return res.json({
                     "Error": false,
