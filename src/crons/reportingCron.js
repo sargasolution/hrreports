@@ -31,6 +31,7 @@ class ReportingCron {
                 const arrOfPunchData = apiResponse.InOutPunchData;
 
                 if (Array.isArray(arrOfPunchData) && arrOfPunchData.length) {
+
                     // Create an array to store the formatted dates
                     const formattedDates = getFormattedDatesBetweenDateRange(startDate, endDate);
 
