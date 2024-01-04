@@ -7,6 +7,7 @@ const { EmployeeWeeklyPunchEntity, EmployeeMonthlyPunchEntity } = require("../co
 const { generatePdf, generateWeeklyXlsx, generateMonthlyXlsx } = require("../services/fileGeneration");
 const path = require('path');
 const EmailCommunication = require("../services/mailCommunication")
+const VendorService = require("../services/vendorService");
 
 class ReportingController {
     static async handlePunchDataInOutWeeklyGetRequest(req, res) {
@@ -14,15 +15,7 @@ class ReportingController {
             const today = new Date("2023-12-23");
             const sevenDaysAgo = subDays(today, 6);
 
-            const response = await axiosInstance.get(DOWNLOAD_IN_OUT_PUNCH_DATA, {
-                params: {
-                    Empcode: 'ALL',
-                    FromDate: format(sevenDaysAgo, 'dd/MM/yyyy'),
-                    ToDate: format(today, 'dd/MM/yyyy')
-                }
-            })
-
-            const apiResponse = response.data;
+            const apiResponse = await VendorService.fetchPunchData(format(sevenDaysAgo, 'dd/MM/yyyy'), format(today, 'dd/MM/yyyy'))
 
             if (apiResponse.Error) {
                 return res.json(apiResponse)
