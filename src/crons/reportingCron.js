@@ -66,11 +66,12 @@ class ReportingCron {
                         punchObj.totalMinsWorkedShow = parseMinutesToHoursDuration(punchObj.totalMinsWorked)
                     }
 
-
                     // select weekly ejs path
                     const templatePath = path.join(__dirname, '..', 'views', 'reports', 'weekly.ejs');
+
                     // parse target file path where to store the generated pdf
                     const destinationPdfPath = path.join(__dirname, '..', 'public', 'reports', `${year}_${shortMonthName}_Week_${weekNumber}_time_management.pdf`);
+
                     // generate pdf
                     await generatePdf(templatePath, {
                         employeePunchInfo: Object.values(employeePunchInfo),
@@ -83,6 +84,7 @@ class ReportingCron {
 
                     // parse target file path where to store the generated excel
                     const excelDestinationPath = path.join(__dirname, '..', 'public', 'reports', `${year}_${shortMonthName}_Week_${weekNumber}_time_management.xlsx`);
+
                     // generate excel file
                     await generateWeeklyXlsx(employeePunchInfo, excelDestinationPath, {
                         sheetName: `${format(startDate, "dd-MM-yyyy")} to ${format(endDate, "dd-MM-yyyy")}`,
