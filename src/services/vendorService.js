@@ -15,7 +15,6 @@ class VendorApiService {
             const apiResponse = response.data;
             return apiResponse;
         } catch (err) {
-            console.error(err);
             throw err;
         }
     }

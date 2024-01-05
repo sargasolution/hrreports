@@ -3,17 +3,19 @@ const fs = require("fs")
 const path = require("path")
 
 class EmailCommunication {
-    static async sendTransacionalMail() {
-        try {
-            let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-            let apiKey = apiInstance.authentications['apiKey'];
-            apiKey.apiKey = process.env.BREVO_MAIL_AUTH_KEY;
-            let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
-            sendSmtpEmail.to = [{ name: "Dibya Mohan", email: 'mohandibya.acharya@gmail.com' }];
-            sendSmtpEmail.sender = { "name": "Dibya Mohan Acharya", "email": "mohandibya123@gmail.com" };
-            sendSmtpEmail.subject = 'Email with Attachments - Hello World';
-            sendSmtpEmail.textContent = 'This email contains a PDF and Excel file as attachments.';
+    constructor() {
+        this.apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+        this.apiInstance.authentications['apiKey'].apiKey = process.env.BREVO_MAIL_AUTH_KEY;
+        this.sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+    }
+
+    async sendWeeklyTransacionalMail() {
+        try {
+            this.sendSmtpEmail.to = [{ name: "Dibya Mohan", email: 'mohandibya123@gmail.com' }];
+            this.sendSmtpEmail.sender = { "name": "Dibya Mohan Acharya", "email": "mohandibya.acharya@gmail.com" };
+            this.sendSmtpEmail.subject = 'Email with Attachments - Hello World';
+            this.sendSmtpEmail.textContent = 'This email contains a PDF and Excel file as attachments.';
 
             const pdfFileData = fs.readFileSync(path.resolve(__dirname, "..", "public", "reports", "output_weekly.pdf"));
 
@@ -23,7 +25,7 @@ class EmailCommunication {
 
             const excelFileDataBuffer = await Buffer.from(excelFileData).toString('base64');
 
-            sendSmtpEmail.attachment = [
+            this.sendSmtpEmail.attachment = [
                 {
                     content: pdfFileDataBuffer,
                     name: 'output_weekly.pdf',
@@ -33,14 +35,13 @@ class EmailCommunication {
                     name: 'output_weekly.xlsx',
                 }
             ]
-            await apiInstance.sendTransacEmail(sendSmtpEmail)
+            await this.apiInstance.sendTransacEmail(this.sendSmtpEmail)
         } catch (err) {
             console.error(err);
             throw err
         }
-
     }
 }
 
 
-module.exports = EmailCommunication;
+module.exports = new EmailCommunication();

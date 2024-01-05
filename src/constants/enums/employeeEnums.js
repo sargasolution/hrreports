@@ -31,8 +31,20 @@ const MONTHLY_REPORT_PDF_OPTIONS = {
     },
 }
 
+const FILE_EXTENSIONS = {
+    PDF: "pdf",
+    EXCEL: "xlsx"
+}
+
+const RECEIVING_ENTITY = {
+    COMPANY: 'company',
+    CLIENT: 'client'
+}
+
 module.exports = {
     DEFAULT_IN_OUT_TIME,
     WEEKLY_REPORT_PDF_OPTIONS,
-    MONTHLY_REPORT_PDF_OPTIONS
+    MONTHLY_REPORT_PDF_OPTIONS,
+    FILE_EXTENSIONS,
+    RECEIVING_ENTITY
 }

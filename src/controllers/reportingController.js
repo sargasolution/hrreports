@@ -1,13 +1,12 @@
 const axiosInstance = require('../utils/axiosConfig');
 const { format, subDays, parse, differenceInMinutes, startOfMonth, endOfMonth } = require('date-fns');
 const { DOWNLOAD_IN_OUT_PUNCH_DATA } = require('../constants/urls/vendorUrls.js');
-const { DEFAULT_IN_OUT_TIME, WEEKLY_REPORT_PDF_OPTIONS, MONTHLY_REPORT_PDF_OPTIONS } = require("../constants/enums/employeeEnums.js");
-const { getFormattedDatesBetweenDateRange, convertArrayOfDatesToEmployeePunchObj, parseMinutesToHoursDuration } = require("../utils/employeeUtils")
-const { EmployeeWeeklyPunchEntity, EmployeeMonthlyPunchEntity } = require("../constants/models/employee.js");
-const { generatePdf, generateWeeklyXlsx, generateMonthlyXlsx } = require("../services/fileGeneration");
+const { DEFAULT_IN_OUT_TIME, MONTHLY_REPORT_PDF_OPTIONS } = require("../constants/enums/employeeEnums.js");
+const { parseMinutesToHoursDuration } = require("../utils/employeeUtils")
+const { EmployeeMonthlyPunchEntity } = require("../constants/models/employee.js");
+const { generatePdf, generateMonthlyXlsx } = require("../services/fileGeneration");
 const path = require('path');
-const EmailCommunication = require("../services/mailCommunication")
-const VendorService = require("../services/vendorService");
+const EmployeePunchService = require("../services/employeePunch");
 
 class ReportingController {
     static async handlePunchDataInOutWeeklyGetRequest(req, res) {
@@ -15,92 +14,22 @@ class ReportingController {
             const today = new Date("2023-12-23");
             const sevenDaysAgo = subDays(today, 6);
 
-            const apiResponse = await VendorService.fetchPunchData(format(sevenDaysAgo, 'dd/MM/yyyy'), format(today, 'dd/MM/yyyy'))
+            await EmployeePunchService.generateWeeklyPunchReportsAndExcel(sevenDaysAgo, today);
+            // await EmailCommunication.sendWeeklyTransacionalMail();
 
-            if (apiResponse.Error) {
-                return res.json(apiResponse)
-            }
+            return res.json({
+                "Error": false,
+                "Msg": "Pdf generated successfully",
+            })
 
-            // extract atray of punch data
-            const arrOfPunchData = apiResponse.InOutPunchData;
-
-            if (Array.isArray(arrOfPunchData) && arrOfPunchData.length) {
-
-                // Create an array to store the formatted dates
-                const formattedDates = getFormattedDatesBetweenDateRange(sevenDaysAgo, today);
-
-                // create a map to store employee records with id as key and value as a object with name and punch data
-                const employeePunchInfo = {};
-
-                arrOfPunchData.forEach((punch) => {
-                    if (!(punch.Empcode in employeePunchInfo)) {
-                        employeePunchInfo[punch.Empcode] = new EmployeeWeeklyPunchEntity(punch.Name, convertArrayOfDatesToEmployeePunchObj(formattedDates))
-                    }
-                    if (punch.DateString in employeePunchInfo[punch.Empcode].punchData) {
-                        employeePunchInfo[punch.Empcode].punchData[punch.DateString].INTime = punch.INTime;
-                        employeePunchInfo[punch.Empcode].punchData[punch.DateString].OUTTime = punch.OUTTime;
-                        employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMinsShow = "0"
-                        if (punch.INTime && punch.INTime !== DEFAULT_IN_OUT_TIME && punch.OUTTime && punch.OUTTime !== DEFAULT_IN_OUT_TIME) {
-                            const date1 = parse(punch.INTime, 'HH:mm', new Date());
-                            const date2 = parse(punch.OUTTime, 'HH:mm', new Date());
-                            const minutesDifference = differenceInMinutes(date2, date1);
-                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMins = minutesDifference;
-                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMinsShow = parseMinutesToHoursDuration(minutesDifference);
-                            if (minutesDifference >= 0) {
-                                employeePunchInfo[punch.Empcode].totalMinsWorked += minutesDifference;
-                            }
-                        } else {
-                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMins = 0;
-                        }
-                    }
-                })
-
-                // parse total mins work to duration
-                for (let key in employeePunchInfo) {
-                    const punchObj = employeePunchInfo[key]
-                    punchObj.totalMinsWorkedShow = parseMinutesToHoursDuration(punchObj.totalMinsWorked)
-                }
-
-                const templatePath = path.join(__dirname, '..', 'views', 'reports', 'weekly.ejs');
-
-                const destinationPdfPath = path.join(__dirname, '..', 'public', 'reports', 'output_weekly.pdf');
-
-                await generatePdf(templatePath, {
-                    employeePunchInfo: Object.values(employeePunchInfo),
-                    tableHeaders: formattedDates.map((date) => ({
-                        day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
-                        date
-                    })),
-                    defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
-                }, destinationPdfPath, WEEKLY_REPORT_PDF_OPTIONS)
-
-                const excelDestinationPath = path.join(__dirname, '..', 'public', 'reports', 'output_weekly.xlsx');
-
-
-                await generateWeeklyXlsx(employeePunchInfo, excelDestinationPath, {
-                    sheetName: `${format(sevenDaysAgo, 'dd-MM-yyyy')} to ${format(today, 'dd-MM-yyyy')}`,
-                    datesList: formattedDates,
-                });
-
-                await EmailCommunication.sendTransacionalMail();
-
-                return res.json({
-                    "Error": false,
-                    "Msg": "Pdf generated successfully",
-                })
-
-                // return res.render("./reports/weekly", {
-                //     employeePunchInfo: Object.values(employeePunchInfo),
-                //     tableHeaders: formattedDates.map((date) => ({
-                //         day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
-                //         date
-                //     })),
-                //     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
-                // })
-
-            }
-
-            return res.json(apiResponse)
+            // return res.render("./reports/weekly", {
+            //     employeePunchInfo: Object.values(employeePunchInfo),
+            //     tableHeaders: formattedDates.map((date) => ({
+            //         day: format(parse(date, 'dd/MM/yyyy', new Date()), 'EEEE'),
+            //         date
+            //     })),
+            //     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
+            // })
         } catch (err) {
             console.error(err);
             return res.json(err);

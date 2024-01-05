@@ -4,8 +4,8 @@
   "description": "HR Punch Reporting Application",
   "main": "./src/app.js",
   "scripts": {
-    "dev": "nodemon ./src/app.js",
-    "start": "node ./src/app.js"
+    "dev": "NODE_ENV=development nodemon ./src/app.js",
+    "start": "NODE_ENV=production node ./src/app.js"
   },
   "keywords": [],
   "author": "Dibya Mohan Acharya",

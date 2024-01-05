@@ -1,0 +1,20 @@
+{
+    "fridayMailingOptions": {
+        "to": [{"name": "", "email": "sargahyd@gmail.com"}],
+        "sender": { "name": "HR", "email": "hrm.in@sargainc.com" },
+        "textContent": ""
+    },
+
+    "weeklyMailingOptions": {
+        "to": [{"name": "Katy", "email": "katy.shi@yageo.com"}],
+        "cc": [{"name": "Sudheer", "email": "sudheer.varma@yageo.com"}, {"name": "Ravi", "email": "ravindra.ruttala@yageo.com"}],
+        "sender": { "name": "HR", "email": "hrm.in@sargainc.com" },
+        "textContent": ""
+    },
+
+    "monthlyMailingOptions": {
+        "to": [{"name": "", "email": "sargahyd@gmail.com"}],
+        "sender": { "name": "HR", "email": "hrm.in@sargainc.com" },
+        "textContent": ""
+    }
+}

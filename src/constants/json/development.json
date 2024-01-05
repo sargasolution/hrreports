@@ -1,0 +1,17 @@
+{
+    "fridayMailingOptions": {
+        "to": [{"name": "Dibya Mohan Acharya", "email": "mohandibya.acharya@gmail.com"}],
+        "sender": { "name": "Dibya Mohan Acharya", "email": "mohandibya123@gmail.com" },
+        "textContent": ""
+    },
+    "weeklyMailingOptions": {
+        "to": [{"name": "Dibya Mohan Acharya", "email": "mohandibya.acharya@gmail.com"}],
+        "sender": { "name": "Dibya Mohan Acharya", "email": "mohandibya123@gmail.com" },
+        "textContent": ""
+    },
+    "monthlyMailingOptions": {
+        "to": [{"name": "Dibya Mohan Acharya", "email": "mohandibya.acharya@gmail.com"}],
+        "sender": { "name": "Dibya Mohan Acharya", "email": "mohandibya123@gmail.com" },
+        "textContent": ""
+    }
+}
