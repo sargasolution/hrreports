@@ -11,11 +11,14 @@ const EmployeePunchService = require("../services/employeePunch");
 class ReportingController {
     static async handlePunchDataInOutWeeklyGetRequest(req, res) {
         try {
-            const today = new Date("2023-12-23");
-            const sevenDaysAgo = subDays(today, 6);
+            const startDate = req.query.startDate;
+            const endDate = req.query.endDate;
+            if (!startDate || !endDate) {
+                endDate = new Date("2023-12-23");
+                startDate = subDays(today, 6);
+            }
 
-            await EmployeePunchService.generateWeeklyPunchReportsAndExcel(sevenDaysAgo, today);
-            // await EmailCommunication.sendWeeklyTransacionalMail();
+            await EmployeePunchService.generateWeeklyPunchReportsAndExcel(startDate, endDate);
 
             return res.json({
                 "Error": false,
