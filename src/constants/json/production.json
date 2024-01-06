@@ -1,20 +1,20 @@
 {
     "fridayMailingOptions": {
-        "to": [{"name": "", "email": "sargahyd@gmail.com"}],
+        "to": [{"email": "sargahyd@gmail.com"}],
         "sender": { "name": "HR", "email": "hrm.in@sargainc.com" },
-        "textContent": ""
+        "textContent": "Hello,\n Please find the weekly time management reports in the below attachments."
     },
 
     "weeklyMailingOptions": {
         "to": [{"name": "Katy", "email": "katy.shi@yageo.com"}],
         "cc": [{"name": "Sudheer", "email": "sudheer.varma@yageo.com"}, {"name": "Ravi", "email": "ravindra.ruttala@yageo.com"}],
         "sender": { "name": "HR", "email": "hrm.in@sargainc.com" },
-        "textContent": ""
+        "textContent": "Hello,\n Please find the weekly time management reports in the below attachments."
     },
 
     "monthlyMailingOptions": {
-        "to": [{"name": "", "email": "sargahyd@gmail.com"}],
+        "to": [{"email": "sargahyd@gmail.com"}],
         "sender": { "name": "HR", "email": "hrm.in@sargainc.com" },
-        "textContent": ""
+        "textContent": "Hello,\n Please find the monthly time management reports in the below attachments."
     }
 }

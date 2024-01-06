@@ -8,6 +8,7 @@ const { generatePdf, generateMonthlyXlsx } = require("../services/fileGeneration
 const path = require('path');
 const EmployeePunchService = require("../services/employeePunch");
 const EmailCommunication = require("../services/mailCommunication");
+const logger = require('../config/logger.js');
 
 class ReportingController {
     static async handlePunchDataInOutWeeklyGetRequest(req, res) {
@@ -20,7 +21,7 @@ class ReportingController {
             }
 
             await EmployeePunchService.generateWeeklyPunchReportsAndExcel(startDate, endDate);
-            // await EmailCommunication.sendWeeklyTransacionalMail(startDate, endDate);
+            await EmailCommunication.sendWeeklyTransacionalMailToClient(startDate, endDate);
 
             return res.json({
                 "Error": false,
@@ -36,7 +37,7 @@ class ReportingController {
             //     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
             // })
         } catch (err) {
-            console.error(err);
+            logger.error(err);
             return res.json(err);
         }
     }
@@ -133,7 +134,7 @@ class ReportingController {
             return res.json(apiResponse)
 
         } catch (err) {
-            console.error(err);
+            logger.error(err);
             return res.json(err);
         }
     }

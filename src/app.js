@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const morganMiddleware = require("./middlewares/morgan");
+const logger = require('./config/logger');
 
 class HRReportingApp {
     constructor() {
@@ -29,7 +30,6 @@ class HRReportingApp {
 
     // Global middleware
     globalMiddleware(req, res, next) {
-        console.log('Executing global middleware');
         next();
     }
 
@@ -81,7 +81,7 @@ class HRReportingApp {
     start() {
         const port = process.env.PORT || 8080;
         this.app.listen(port, () => {
-            console.log(`Server is running on port ${port}`);
+            logger.info(`Server is running on port ${port}`);
         });
     }
 }

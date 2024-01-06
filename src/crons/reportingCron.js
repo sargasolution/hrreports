@@ -8,9 +8,9 @@ const logger = require("../config/logger");
 class ReportingCron {
     static run() {
         // cron to send weekly mails from last week Sunday to Saturday
-        cron.schedule('*/30 * * * *', async () => {
+        cron.schedule('0 30 5 * * 1', async () => {
             try {
-                logger.info("Cron started successfully");
+                logger.info("Weekly client cron started.");
 
                 // Calculate last week's start and end dates
                 const today = new Date();
@@ -19,10 +19,13 @@ class ReportingCron {
                 const endDate = endOfWeek(lastMonday);
 
                 await EmployeePunchService.generateWeeklyPunchReportsAndExcel(startDate, endDate);
-                // await EmailCommunication.sendWeeklyTransacionalMail(startDate, endDate);
+                await EmailCommunication.sendWeeklyTransacionalMailToClient(startDate, endDate);
+
+                logger.info("Weekly client cron ended successfully");
 
             } catch (err) {
-                console.error(err);
+                logger.warn("Weekly client cron failed");
+                logger.error(err);
             }
         });
     }

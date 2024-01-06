@@ -5,6 +5,7 @@ const EmployeeUtils = require("../utils/employeeUtils");
 const FileGenerationService = require("../services/fileGeneration");
 const { EmployeeWeeklyPunchEntity } = require("../constants/models/employee");
 const { DEFAULT_IN_OUT_TIME, WEEKLY_REPORT_PDF_OPTIONS, FILE_EXTENSIONS } = require("../constants/enums/employeeEnums");
+const logger = require("../config/logger");
 
 class EmployeePunchService {
     static async generateWeeklyPunchReportsAndExcel(startDate, endDate) {
@@ -93,7 +94,7 @@ class EmployeePunchService {
                 throw new Error("No punch data available")
             }
         } catch (err) {
-            console.error(err);
+            logger.error(err)
             throw err;
         }
 
