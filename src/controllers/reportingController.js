@@ -7,18 +7,20 @@ const { EmployeeMonthlyPunchEntity } = require("../constants/models/employee.js"
 const { generatePdf, generateMonthlyXlsx } = require("../services/fileGeneration");
 const path = require('path');
 const EmployeePunchService = require("../services/employeePunch");
+const EmailCommunication = require("../services/mailCommunication");
 
 class ReportingController {
     static async handlePunchDataInOutWeeklyGetRequest(req, res) {
         try {
-            const startDate = req.query.startDate;
-            const endDate = req.query.endDate;
+            let startDate = req.query.startDate;
+            let endDate = req.query.endDate;
             if (!startDate || !endDate) {
                 endDate = new Date("2023-12-23");
-                startDate = subDays(today, 6);
+                startDate = subDays(endDate, 6);
             }
 
             await EmployeePunchService.generateWeeklyPunchReportsAndExcel(startDate, endDate);
+            // await EmailCommunication.sendWeeklyTransacionalMail(startDate, endDate);
 
             return res.json({
                 "Error": false,

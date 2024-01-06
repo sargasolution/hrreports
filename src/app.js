@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const morganMiddleware = require("./middlewares/morgan");
 
 class HRReportingApp {
     constructor() {
@@ -21,7 +22,7 @@ class HRReportingApp {
 
         // Global middleware
         // this.app.use(this.globalMiddleware.bind(this));
-
+        this.setupLoggers();
         this.setupRoutes();
         this.setupCronJobs();
     }
@@ -71,6 +72,10 @@ class HRReportingApp {
                 cronJob.run();
             }
         });
+    }
+
+    setupLoggers() {
+        this.app.use(morganMiddleware);
     }
 
     start() {

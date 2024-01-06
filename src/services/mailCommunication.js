@@ -3,6 +3,7 @@ const fs = require("fs/promises")
 const path = require("path")
 const EmployeeUtils = require("../utils/employeeUtils");
 const { FILE_EXTENSIONS } = require("../constants/enums/employeeEnums");
+const logger = require('../config/logger');
 
 class EmailCommunication {
 
@@ -15,8 +16,8 @@ class EmailCommunication {
     async sendWeeklyTransacionalMail(startDate, endDate) {
         try {
 
-            const mailConfig = await fs.readFile(path.resolve(__dirname, "..", "constants", "json", `${process.env.NODE_ENV}.json`));
-            console.log(mailConfig);
+            const mailConfigBuffer = await fs.readFile(path.resolve(__dirname, "..", "constants", "json", `${process.env.NODE_ENV}.json`), 'utf8');
+            const mailConfig = JSON.parse(mailConfigBuffer);
             this.sendSmtpEmail.to = [{ name: "Dibya Mohan", email: 'mohandibya123@gmail.com' }];
             this.sendSmtpEmail.sender = { "name": "Dibya Mohan Acharya", "email": "mohandibya.acharya@gmail.com" };
             this.sendSmtpEmail.subject = 'Email with Attachments - Hello World';
@@ -45,7 +46,7 @@ class EmailCommunication {
             ]
             await this.apiInstance.sendTransacEmail(this.sendSmtpEmail)
         } catch (err) {
-            console.error(err);
+            logger.error(err);
             throw err
         }
     }
