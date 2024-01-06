@@ -1,11 +1,12 @@
 const cron = require('node-cron');
 const { endOfWeek, startOfWeek, subDays } = require("date-fns");
 const EmployeePunchService = require("../services/employeePunch");
+const EmailCommunication = require("../services/mailCommunication");
 
 class ReportingCron {
     static run() {
         // cron to send weekly mails from last week Sunday to Saturday
-        cron.schedule('*/30 * * * *', async () => {
+        cron.schedule('*/5 * * * *', async () => {
             try {
 
                 // Calculate last week's start and end dates
@@ -15,6 +16,7 @@ class ReportingCron {
                 const endDate = endOfWeek(lastMonday);
 
                 await EmployeePunchService.generateWeeklyPunchReportsAndExcel(startDate, endDate);
+                await EmailCommunication.sendWeeklyTransacionalMail(startDate, endDate);
 
             } catch (err) {
                 console.error(err);
