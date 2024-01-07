@@ -2,12 +2,16 @@ const ReportingController = require('../controllers/reportingController');
 
 class ReportingRoute {
     static handlePunchDataInOutWeeklyGetRequest(req, res) {
-        return null;
+        return res.json({
+            message: "Not in service"
+        });
         ReportingController.handlePunchDataInOutWeeklyGetRequest(req, res);
     }
 
     static handlePunchDataInOutMonthlyGetRequest(req, res) {
-        return null;
+        return res.json({
+            message: "Not in service"
+        });
         ReportingController.handlePunchDataInOutMonthlyGetRequest(req, res);
     }
 }
