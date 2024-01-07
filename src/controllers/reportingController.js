@@ -1,5 +1,5 @@
 const axiosInstance = require('../utils/axiosConfig');
-const { format, subDays, parse, differenceInMinutes, startOfMonth, endOfMonth } = require('date-fns');
+const { format, subDays, parse, differenceInMinutes, startOfMonth, endOfMonth, startOfWeek, endOfWeek } = require('date-fns');
 const { DOWNLOAD_IN_OUT_PUNCH_DATA } = require('../constants/urls/vendorUrls.js');
 const { DEFAULT_IN_OUT_TIME, MONTHLY_REPORT_PDF_OPTIONS } = require("../constants/enums/employeeEnums.js");
 const { parseMinutesToHoursDuration } = require("../utils/employeeUtils")
@@ -16,12 +16,14 @@ class ReportingController {
             let startDate = req.query.startDate;
             let endDate = req.query.endDate;
             if (!startDate || !endDate) {
-                endDate = new Date("2023-12-23");
-                startDate = subDays(endDate, 6);
+                const today = new Date();
+                const lastMonday = subDays(today, 7);
+                startDate = startOfWeek(lastMonday);
+                endDate = endOfWeek(lastMonday);
             }
 
             await EmployeePunchService.generateWeeklyPunchReportsAndExcel(startDate, endDate);
-            await EmailCommunication.sendWeeklyTransacionalMailToClient(startDate, endDate);
+            // await EmailCommunication.sendWeeklyTransacionalMailToClient(startDate, endDate);
 
             return res.json({
                 "Error": false,

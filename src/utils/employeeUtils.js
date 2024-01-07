@@ -12,7 +12,8 @@ class EmployeeUtils {
                     [item]: {
                         "INTime": DEFAULT_IN_OUT_TIME,
                         "OUTTime": DEFAULT_IN_OUT_TIME,
-                        "WorkTimeInMins": null
+                        "WorkTimeInMins": 0,
+                        "WorkTimeInMinsShow": "0"
                     },
                 }
             }, {})
@@ -46,10 +47,12 @@ class EmployeeUtils {
     }
 
     static parseMinutesToHoursDuration(minutes) {
-        if (typeof minutes !== 'number' || isNaN(minutes)) {
-            return 'Invalid input. Please provide a valid number of minutes.';
+        if (!minutes) {
+            return "0";
         }
-
+        if (typeof minutes !== 'number' || isNaN(minutes)) {
+            return '0';
+        }
         if (minutes <= 0) {
             return "0";
         }
