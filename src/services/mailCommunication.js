@@ -4,7 +4,7 @@ const path = require("path")
 const EmployeeUtils = require("../utils/employeeUtils");
 const { FILE_EXTENSIONS } = require("../constants/enums/employeeEnums");
 const logger = require('../config/logger');
-const { format } = require("date-fns");
+const { format, getYear } = require("date-fns");
 
 class EmailCommunication {
 
@@ -34,7 +34,7 @@ class EmailCommunication {
             }
 
             this.sendSmtpEmail.textContent = weeklyMailingOptions["textContent"] || ".";
-            this.sendSmtpEmail.subject = `Weekly Time Management - ${format(startDate, "dd/MM/yyyy")} to ${format(endDate, "dd/MM/yyyy")} `;
+            this.sendSmtpEmail.subject = `Weekly Time Management Report - ${format(startDate, "dd/MM/yyyy")} to ${format(endDate, "dd/MM/yyyy")} `;
 
             // extract excel file name
             const excelFileName = EmployeeUtils.parseWeeklyReportFileName(startDate, endDate, FILE_EXTENSIONS.EXCEL);
@@ -61,7 +61,6 @@ class EmailCommunication {
         }
     }
 
-
     async sendWeeklyTransacionalMailToCompany(startDate, endDate) {
         try {
             // extract mailimg options from json
@@ -81,7 +80,7 @@ class EmailCommunication {
             }
 
             this.sendSmtpEmail.textContent = fridayMailingOptions["textContent"] || ".";
-            this.sendSmtpEmail.subject = `Weekly Time Management - ${format(startDate, "dd/MM/yyyy")} to ${format(endDate, "dd/MM/yyyy")} `;
+            this.sendSmtpEmail.subject = `Weekly Time Management Report - ${format(startDate, "dd/MM/yyyy")} to ${format(endDate, "dd/MM/yyyy")} `;
 
             // extract pdf file name
             const pdfFileName = EmployeeUtils.parseWeeklyReportFileName(startDate, endDate, FILE_EXTENSIONS.PDF);
@@ -92,6 +91,63 @@ class EmailCommunication {
 
             // extract excel file name
             const excelFileName = EmployeeUtils.parseWeeklyReportFileName(startDate, endDate, FILE_EXTENSIONS.EXCEL);
+            // read data from excel file at the destination path
+            const excelFileData = await fs.readFile(path.resolve(__dirname, "..", "public", "reports", excelFileName));
+            // convert buffer to proper format
+            const excelFileDataBuffer = await Buffer.from(excelFileData).toString('base64');
+
+            if (pdfFileData && excelFileData) {
+                this.sendSmtpEmail.attachment = [
+                    {
+                        content: excelFileDataBuffer,
+                        name: excelFileName,
+                    },
+                    {
+                        content: pdfFileDataBuffer,
+                        name: pdfFileName
+                    }
+                ];
+                await this.apiInstance.sendTransacEmail(this.sendSmtpEmail);
+            } else {
+                throw new Error("No excel and PDF data could be read")
+            }
+
+        } catch (err) {
+            logger.error(err);
+            throw err
+        }
+    }
+
+    async sendMonthlyTransactionMailToCompany(startDate, endDate) {
+        try {
+            // extract mailimg options from json
+            const mailConfigBuffer = await fs.readFile(path.resolve(__dirname, "..", "constants", "json", `${process.env.NODE_ENV}.json`), 'utf8');
+            const mailConfig = JSON.parse(mailConfigBuffer);
+            const monthlyMailingOptions = mailConfig["fridayMailingOptions"]
+
+            // associate options to email body
+            this.sendSmtpEmail.sender = monthlyMailingOptions["sender"];
+
+            if (Array.isArray(monthlyMailingOptions["to"]) && monthlyMailingOptions["to"].length) {
+                this.sendSmtpEmail.to = monthlyMailingOptions["to"];
+            }
+
+            if (Array.isArray(monthlyMailingOptions["cc"]) && monthlyMailingOptions["cc"].length) {
+                this.sendSmtpEmail.cc = monthlyMailingOptions["cc"];
+            }
+
+            this.sendSmtpEmail.textContent = monthlyMailingOptions["textContent"] || ".";
+            this.sendSmtpEmail.subject = `Monthly Time Management Report - ${format(endDate, "MMM")}, ${getYear(endDate)}`;
+
+            // extract pdf file name
+            const pdfFileName = EmployeeUtils.parseMonthlyReportFileName(endDate, FILE_EXTENSIONS.PDF);
+            // read data from pdf file at the destination path
+            const pdfFileData = await fs.readFile(path.resolve(__dirname, "..", "public", "reports", pdfFileName));
+            // convert buffer to proper format
+            const pdfFileDataBuffer = await Buffer.from(pdfFileData).toString('base64');
+
+            // extract excel file name
+            const excelFileName = EmployeeUtils.parseMonthlyReportFileName(endDate, FILE_EXTENSIONS.EXCEL);
             // read data from excel file at the destination path
             const excelFileData = await fs.readFile(path.resolve(__dirname, "..", "public", "reports", excelFileName));
             // convert buffer to proper format

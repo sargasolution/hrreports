@@ -31,7 +31,6 @@ class FileGenerationService {
         }
     }
 
-
     static async generateMonthlyXlsx(excelGenerationData, outputExcelPath, excelConfig = {}) {
         try {
             // Create a new Excel workbook and worksheet
@@ -40,6 +39,12 @@ class FileGenerationService {
 
             worksheet.columns = excelConfig?.columns || [];
             worksheet.addRows(excelGenerationData);
+
+            // Set font style for the header row to make it bold
+            const headerRow = worksheet.getRow(1);
+            headerRow.font = {
+                bold: true
+            };
 
             // Save the XLSX data to a file
             await workbook.xlsx.writeFile(outputExcelPath);

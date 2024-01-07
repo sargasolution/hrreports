@@ -71,8 +71,8 @@ class ReportingCron {
                 const endDate = today;
                 const startDate = startOfMonth(endDate);
 
-                await EmployeePunchService.generateWeeklyPunchReportsAndExcel(startDate, endDate);
-                // await EmailCommunication.sendWeeklyTransacionalMailToCompany(startDate, endDate);
+                await EmployeePunchService.generateMonthlyReportAndExcel(startDate, endDate);
+                await EmailCommunication.sendMonthlyTransactionMailToCompany(startDate, endDate);
 
                 logger.info("Monthly company cron ended successfully");
 

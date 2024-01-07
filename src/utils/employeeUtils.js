@@ -1,4 +1,4 @@
-const { format, differenceInDays, addDays, parse } = require('date-fns');
+const { format, differenceInDays, addDays, parse, getYear } = require('date-fns');
 const { DEFAULT_IN_OUT_TIME } = require("../constants/enums/employeeEnums");
 
 
@@ -70,6 +70,10 @@ class EmployeeUtils {
         const formattedStartDate = format(startDate, 'dd_MM_yyyy');
         const formattedEndDate = format(endDate, 'dd_MM_yyyy');
         return `${formattedStartDate}_to_${formattedEndDate}__time_management.${fileExtension}`
+    }
+
+    static parseMonthlyReportFileName(date, fileExtension = 'pdf') {
+        return `${format(date, 'MMMM')}_${getYear(date)}__time managment.${fileExtension}`;
     }
 
     static parseExcelSheetName(startDate, endDate) {
