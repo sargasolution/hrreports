@@ -2,10 +2,12 @@ const ReportingController = require('../controllers/reportingController');
 
 class ReportingRoute {
     static handlePunchDataInOutWeeklyGetRequest(req, res) {
+        return null;
         ReportingController.handlePunchDataInOutWeeklyGetRequest(req, res);
     }
 
     static handlePunchDataInOutMonthlyGetRequest(req, res) {
+        return null;
         ReportingController.handlePunchDataInOutMonthlyGetRequest(req, res);
     }
 }
