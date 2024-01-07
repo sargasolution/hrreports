@@ -25,13 +25,16 @@ class EmployeeUtils {
         const formattedDates = [];
 
         // Parse start and end dates
-        const start = new Date(startDate);
-        const end = new Date(endDate);
+        let start = new Date(startDate);
+        let end = new Date(endDate);
 
         // Ensure start date is before end date
         if (!start || !end || start > end) {
             throw new Error('Start date must be before or equal to end date');
         }
+
+        start = parse(format(start, "dd/MM/yyyy"), "dd/MM/yyyy", new Date());
+        end = parse(format(end, "dd/MM/yyyy"), 'dd/MM/yyyy', new Date());
 
         // Calculate the difference in days between start and end dates
         const daysDifference = differenceInDays(end, start);
