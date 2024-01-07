@@ -81,7 +81,7 @@ class HRReportingApp {
     start() {
         const port = process.env.PORT || 8080;
         this.app.listen(port, () => {
-            logger.info(`Server is running on port ${port}`);
+            logger.info(`Server is running on port ${port}, environment ${process.env.NODE_ENV}`);
         });
     }
 }
