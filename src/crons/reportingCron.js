@@ -4,12 +4,16 @@ const EmployeePunchService = require("../services/employeePunch");
 const EmailCommunication = require("../services/mailCommunication");
 const logger = require("../config/logger");
 const { CRON_JOBS } = require("../constants/enums/employeeEnums");
+const cronitor = require('cronitor')(process.env.CRONITOR_API_KEY, {
+    environment: process.env.NODE_ENV
+});
+cronitor.wraps(cron);
 
 
 class ReportingCron {
     static run() {
         // cron to send weekly mails from last week Sunday to Saturday
-        cron.schedule(CRON_JOBS.MONDAY_MORNING, async () => {
+        cronitor.schedule("Monday Morning Cron", CRON_JOBS.MONDAY_MORNING, async () => {
             try {
                 logger.info("Weekly client cron started.");
 
@@ -29,14 +33,13 @@ class ReportingCron {
                 logger.error(err);
             }
         }, {
-            name: "Monday Morning Cron",
             runOnInit: false
         });
 
 
 
         // cron to send weekly mails from last week Saturday to Friday
-        cron.schedule(CRON_JOBS.FRIDAY_EVENING, async () => {
+        cronitor.schedule("Friday Evening Cron", CRON_JOBS.FRIDAY_EVENING, async () => {
             try {
                 logger.info("Friday company cron started.");
 
@@ -55,14 +58,13 @@ class ReportingCron {
                 logger.error(err);
             }
         }, {
-            name: "Friday Evening Cron",
             runOnInit: false
         });
 
 
 
         // cron to send monthly mails to company
-        cron.schedule(CRON_JOBS.MONTHLY, async () => {
+        cronitor.schedule("Monthly Cron", CRON_JOBS.MONTHLY, async () => {
             try {
                 logger.info("Monthly company cron started.");
 
@@ -81,7 +83,6 @@ class ReportingCron {
                 logger.error(err);
             }
         }, {
-            name: "Monthly Cron",
             runOnInit: false
         });
     }
