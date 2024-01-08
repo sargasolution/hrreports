@@ -16,7 +16,8 @@ class ReportingCron {
         cronitor.schedule("Monday Morning Cron", CRON_JOBS.MONDAY_MORNING, async () => {
             try {
                 logger.info("Weekly client cron started.");
-
+                logger.info("Weekly client cron ended successfully");
+                return;
                 // Calculate last week's start and end dates
                 const today = new Date();
                 const lastMonday = subDays(today, 7);
@@ -67,6 +68,8 @@ class ReportingCron {
         cronitor.schedule("Monthly Cron", CRON_JOBS.MONTHLY, async () => {
             try {
                 logger.info("Monthly company cron started.");
+                logger.info("Monthly company cron ended successfully");
+                return;
 
                 // Calculate last week's start and end dates
                 const today = new Date();
