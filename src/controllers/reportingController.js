@@ -37,7 +37,7 @@ class ReportingController {
             }
 
             await EmployeePunchService.generateWeeklyPunchReportsAndExcel(parsedStartDate, parsedEndDate);
-            await EmailCommunication.sendWeeklyTransacionalMailToCompany(parsedStartDate, parsedEndDate, true);
+            await EmailCommunication.sendWeeklyTransacionalMailToCompany(parsedStartDate, parsedEndDate);
 
             return res.json({
                 "Error": false,
@@ -70,7 +70,7 @@ class ReportingController {
             const startDate = startOfMonth(endDate);
 
             await EmployeePunchService.generateMonthlyReportAndExcel(startDate, endDate);
-            await EmailCommunication.sendMonthlyTransactionMailToCompany(startDate, endDate, true);
+            await EmailCommunication.sendMonthlyTransactionMailToCompany(startDate, endDate);
 
 
             return res.json({
