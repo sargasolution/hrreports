@@ -14,11 +14,11 @@ class EmailCommunication {
         this.sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
     }
 
-    async sendWeeklyTransacionalMailToClient(startDate, endDate) {
+    async sendWeeklyTransacionalMailToClient(startDate, endDate, forceSendDev = false) {
         try {
 
             // extract mailimg options from json
-            const mailConfigBuffer = await fs.readFile(path.resolve(__dirname, "..", "constants", "json", `${process.env.NODE_ENV}.json`), 'utf8');
+            const mailConfigBuffer = await fs.readFile(path.resolve(__dirname, "..", "constants", "json", `${forceSendDev ? 'development' : process.env.NODE_ENV}.json`), 'utf8');
             const mailConfig = JSON.parse(mailConfigBuffer);
             const weeklyMailingOptions = mailConfig["weeklyMailingOptions"]
 
@@ -61,10 +61,10 @@ class EmailCommunication {
         }
     }
 
-    async sendWeeklyTransacionalMailToCompany(startDate, endDate) {
+    async sendWeeklyTransacionalMailToCompany(startDate, endDate, forceSendDev = false) {
         try {
             // extract mailimg options from json
-            const mailConfigBuffer = await fs.readFile(path.resolve(__dirname, "..", "constants", "json", `${process.env.NODE_ENV}.json`), 'utf8');
+            const mailConfigBuffer = await fs.readFile(path.resolve(__dirname, "..", "constants", "json", `${forceSendDev ? 'development' : process.env.NODE_ENV}.json`), 'utf8');
             const mailConfig = JSON.parse(mailConfigBuffer);
             const fridayMailingOptions = mailConfig["fridayMailingOptions"]
 
@@ -118,10 +118,10 @@ class EmailCommunication {
         }
     }
 
-    async sendMonthlyTransactionMailToCompany(startDate, endDate) {
+    async sendMonthlyTransactionMailToCompany(startDate, endDate, forceSendDev = false) {
         try {
             // extract mailimg options from json
-            const mailConfigBuffer = await fs.readFile(path.resolve(__dirname, "..", "constants", "json", `${process.env.NODE_ENV}.json`), 'utf8');
+            const mailConfigBuffer = await fs.readFile(path.resolve(__dirname, "..", "constants", "json", `${forceSendDev ? 'development' : process.env.NODE_ENV}.json`), 'utf8');
             const mailConfig = JSON.parse(mailConfigBuffer);
             const monthlyMailingOptions = mailConfig["monthlyMailingOptions"]
 
