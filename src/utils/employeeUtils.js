@@ -84,6 +84,19 @@ class EmployeeUtils {
         return format(parse(formattedDate, 'dd/MM/yyyy', new Date()), 'EEEE')
     }
 
+    // To validate date format
+    static isValidDateFormat = (dateString) => {
+        const dateFormat = /(\d{2})\/(\d{2})\/(\d{4})/;
+        return dateFormat.test(dateString);
+    };
+
+
+    // to days difference
+    static daysDifference = (startDate, endDate) => {
+        const daysDifference = differenceInDays(startDate, endDate);
+        return daysDifference;
+    };
+
 }
 
 

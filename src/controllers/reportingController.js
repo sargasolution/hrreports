@@ -1,26 +1,47 @@
-const { subDays, startOfMonth, startOfWeek, endOfWeek } = require('date-fns');
+const { startOfMonth, parse } = require('date-fns');
 const EmployeePunchService = require("../services/employeePunch");
 const EmailCommunication = require("../services/mailCommunication");
 const logger = require('../config/logger.js');
+const EmployeeUtils = require("../utils/employeeUtils");
 
 class ReportingController {
     static async handlePunchDataInOutWeeklyGetRequest(req, res) {
         try {
             let startDate = req.query.startDate;
             let endDate = req.query.endDate;
+
             if (!startDate || !endDate) {
-                const today = new Date();
-                const lastMonday = subDays(today, 7);
-                startDate = startOfWeek(lastMonday);
-                endDate = endOfWeek(lastMonday);
+                throw new Error("PLease provide parameters startDate and endDate");
             }
 
-            await EmployeePunchService.generateWeeklyPunchReportsAndExcel(startDate, endDate);
-            await EmailCommunication.sendWeeklyTransacionalMailToClient(startDate, endDate);
+            if (!EmployeeUtils.isValidDateFormat(startDate)) {
+                throw new Error("Please enter valid startDate format 'dd/MM/yyyy'");
+            }
+
+            if (!EmployeeUtils.isValidDateFormat(endDate)) {
+                throw new Error("Please enter valid endDate format 'dd/MM/yyyy'");
+            }
+
+
+            const parsedStartDate = parse(startDate, 'dd/MM/yyyy', new Date());
+            const parsedEndDate = parse(endDate, 'dd/MM/yyyy', new Date());
+
+            if (parsedStartDate > parsedEndDate) {
+                throw new Error('startDate should not be later than endDate.');
+            }
+
+            const daysDiff = EmployeeUtils.daysDifference(parsedEndDate, parsedStartDate);
+
+            if (daysDiff < 0 || daysDiff > 7) {
+                throw new Error(`The difference between startDate and endDate should not be more than 7 days.`)
+            }
+
+            await EmployeePunchService.generateWeeklyPunchReportsAndExcel(parsedStartDate, parsedEndDate);
+            await EmailCommunication.sendWeeklyTransacionalMailToCompany(parsedStartDate, parsedEndDate);
 
             return res.json({
                 "Error": false,
-                "Msg": "Pdf generated successfully",
+                "Msg": "Pdf and Excel sheet generated successfully",
             })
 
             // return res.render("./reports/weekly", {
@@ -34,7 +55,10 @@ class ReportingController {
 
         } catch (err) {
             logger.error(err);
-            return res.json(err);
+            return res.status(400).json({
+                Msg: err?.message || "Failed to execute the API",
+                Error: true
+            });
         }
     }
 
@@ -42,11 +66,11 @@ class ReportingController {
     static async handlePunchDataInOutMonthlyGetRequest(req, res) {
         try {
 
-            const today = new Date();
-            const startOfCurrentMonth = startOfMonth(today);
+            const endDate = new Date();
+            const startDate = startOfMonth(endDate);
 
-            await EmployeePunchService.generateMonthlyReportAndExcel(startOfCurrentMonth, today);
-            await EmailCommunication.sendMonthlyTransactionMailToCompany(startOfCurrentMonth, today);
+            await EmployeePunchService.generateMonthlyReportAndExcel(startDate, endDate);
+            await EmailCommunication.sendMonthlyTransactionMailToCompany(startDate, endDate);
 
 
             return res.json({
@@ -65,7 +89,10 @@ class ReportingController {
 
         } catch (err) {
             logger.error(err);
-            return res.json(err);
+            return res.status(400).json({
+                Msg: err?.message || "Failed to execute the API",
+                Error: true
+            });
         }
     }
 }

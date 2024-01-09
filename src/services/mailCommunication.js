@@ -123,7 +123,7 @@ class EmailCommunication {
             // extract mailimg options from json
             const mailConfigBuffer = await fs.readFile(path.resolve(__dirname, "..", "constants", "json", `${process.env.NODE_ENV}.json`), 'utf8');
             const mailConfig = JSON.parse(mailConfigBuffer);
-            const monthlyMailingOptions = mailConfig["fridayMailingOptions"]
+            const monthlyMailingOptions = mailConfig["monthlyMailingOptions"]
 
             // associate options to email body
             this.sendSmtpEmail.sender = monthlyMailingOptions["sender"];
