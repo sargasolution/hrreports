@@ -71,6 +71,10 @@ class EmployeePunchService {
                 // parse target file path where to store the generated pdf
                 const destinationPdfPath = path.join(__dirname, '..', 'public', 'reports', EmployeeUtils.parseWeeklyReportFileName(startDate, endDate, FILE_EXTENSIONS.PDF));
 
+                // get comapany logos
+                const companyLogoPath = path.join(__dirname, '..', 'public', 'images', 'sarga_logo.png');
+                const companySecondaryLogoPath = path.join(__dirname, '..', 'public', 'images', 'team_office_logo.png');
+
                 // generate pdf
                 await FileGenerationService.generatePdf(templatePath, {
                     employeePunchInfo: Object.values(employeePunchInfo),
@@ -78,7 +82,9 @@ class EmployeePunchService {
                         day: EmployeeUtils.getDayOfWeek(formattedDate),
                         date: formattedDate
                     })),
-                    defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME
+                    defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME,
+                    companyLogoPath,
+                    companySecondaryLogoPath
                 }, destinationPdfPath, WEEKLY_REPORT_PDF_OPTIONS);
 
                 // parse target file path where to store the generated excel
@@ -144,13 +150,19 @@ class EmployeePunchService {
 
                 const templatePath = path.join(__dirname, '..', 'views', 'reports', 'monthly.ejs');
 
+                // get comapany logos
+                const companyLogoPath = path.join(__dirname, '..', 'public', 'images', 'sarga_logo.png');
+                const companySecondaryLogoPath = path.join(__dirname, '..', 'public', 'images', 'team_office_logo.png');
+
                 const pdfGenerationData = {
                     employeePunchInfo: Object.values(employeePunchInfo),
                     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME,
                     metaData: {
                         month: format(endDate, 'MMMM'),
                         year: format(endDate, 'yyyy')
-                    }
+                    },
+                    companyLogoPath,
+                    companySecondaryLogoPath
                 };
 
                 const pdfDestinationPath = path.join(__dirname, '..', 'public', 'reports', EmployeeUtils.parseMonthlyReportFileName(endDate, FILE_EXTENSIONS.PDF));
