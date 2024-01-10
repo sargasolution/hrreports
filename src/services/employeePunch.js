@@ -4,7 +4,7 @@ const VendorApiService = require("../services/vendorService");
 const EmployeeUtils = require("../utils/employeeUtils");
 const FileGenerationService = require("../services/fileGeneration");
 const { EmployeeWeeklyPunchEntity, EmployeeMonthlyPunchEntity } = require("../constants/models/employee");
-const { DEFAULT_IN_OUT_TIME, WEEKLY_REPORT_PDF_OPTIONS, MONTHLY_REPORT_PDF_OPTIONS, FILE_EXTENSIONS } = require("../constants/enums/employeeEnums");
+const { DEFAULT_IN_OUT_TIME, WEEKLY_REPORT_PDF_OPTIONS, MONTHLY_REPORT_PDF_OPTIONS, FILE_EXTENSIONS, ENCODED_IMAGES } = require("../constants/enums/employeeEnums");
 const logger = require("../config/logger");
 
 class EmployeePunchService {
@@ -71,10 +71,6 @@ class EmployeePunchService {
                 // parse target file path where to store the generated pdf
                 const destinationPdfPath = path.join(__dirname, '..', 'public', 'reports', EmployeeUtils.parseWeeklyReportFileName(startDate, endDate, FILE_EXTENSIONS.PDF));
 
-                // get comapany logos
-                const companyLogoPath = path.join(__dirname, '..', 'public', 'images', 'sarga_logo.png');
-                const companySecondaryLogoPath = path.join(__dirname, '..', 'public', 'images', 'team_office_logo.png');
-
                 // generate pdf
                 await FileGenerationService.generatePdf(templatePath, {
                     employeePunchInfo: Object.values(employeePunchInfo),
@@ -83,8 +79,8 @@ class EmployeePunchService {
                         date: formattedDate
                     })),
                     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME,
-                    companyLogoPath,
-                    companySecondaryLogoPath
+                    companyLogoPath: ENCODED_IMAGES.COMPANY_LOGO,
+                    companySecondaryLogoPath: ENCODED_IMAGES.COMPANY_SECONDAY_LOGO
                 }, destinationPdfPath, WEEKLY_REPORT_PDF_OPTIONS);
 
                 // parse target file path where to store the generated excel
@@ -150,10 +146,6 @@ class EmployeePunchService {
 
                 const templatePath = path.join(__dirname, '..', 'views', 'reports', 'monthly.ejs');
 
-                // get comapany logos
-                const companyLogoPath = path.join(__dirname, '..', 'public', 'images', 'sarga_logo.png');
-                const companySecondaryLogoPath = path.join(__dirname, '..', 'public', 'images', 'team_office_logo.png');
-
                 const pdfGenerationData = {
                     employeePunchInfo: Object.values(employeePunchInfo),
                     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME,
@@ -161,8 +153,8 @@ class EmployeePunchService {
                         month: format(endDate, 'MMMM'),
                         year: format(endDate, 'yyyy')
                     },
-                    companyLogoPath,
-                    companySecondaryLogoPath
+                    companyLogoPath: ENCODED_IMAGES.COMPANY_LOGO,
+                    companySecondaryLogoPath: ENCODED_IMAGES.COMPANY_SECONDAY_LOGO
                 };
 
                 const pdfDestinationPath = path.join(__dirname, '..', 'public', 'reports', EmployeeUtils.parseMonthlyReportFileName(endDate, FILE_EXTENSIONS.PDF));
