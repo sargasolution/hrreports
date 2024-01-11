@@ -31,7 +31,7 @@ class ReportingController {
 
             const daysDiff = EmployeeUtils.daysDifference(parsedEndDate, parsedStartDate);
 
-            if (daysDiff < 0 || daysDiff > 7) {
+            if (daysDiff < 0 || daysDiff > 6) {
                 throw new Error(`The difference between startDate and endDate should not be more than 7 days.`)
             }
 
