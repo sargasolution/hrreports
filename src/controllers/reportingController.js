@@ -7,8 +7,7 @@ const EmployeeUtils = require("../utils/employeeUtils");
 class ReportingController {
     static async handlePunchDataInOutWeeklyGetRequest(req, res) {
         try {
-            let startDate = req.query.startDate;
-            let endDate = req.query.endDate;
+            let { startDate, endDate, forceSendDev } = req.query;
 
             if (!startDate || !endDate) {
                 throw new Error("PLease provide parameters startDate and endDate");
@@ -37,7 +36,7 @@ class ReportingController {
             }
 
             await EmployeePunchService.generateWeeklyPunchReportsAndExcel(parsedStartDate, parsedEndDate);
-            await EmailCommunication.sendWeeklyTransacionalMailToCompany(parsedStartDate, parsedEndDate);
+            await EmailCommunication.sendWeeklyTransacionalMailToCompany(parsedStartDate, parsedEndDate, forceSendDev);
 
             return res.json({
                 "Error": false,
@@ -66,11 +65,13 @@ class ReportingController {
     static async handlePunchDataInOutMonthlyGetRequest(req, res) {
         try {
 
+            const { forceSendDev } = req.query;
+
             const endDate = new Date();
             const startDate = startOfMonth(endDate);
 
             await EmployeePunchService.generateMonthlyReportAndExcel(startDate, endDate);
-            await EmailCommunication.sendMonthlyTransactionMailToCompany(startDate, endDate);
+            await EmailCommunication.sendMonthlyTransactionMailToCompany(startDate, endDate, forceSendDev);
 
 
             return res.json({
