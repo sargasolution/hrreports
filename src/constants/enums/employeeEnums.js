@@ -8,10 +8,14 @@ const WEEKLY_REPORT_PDF_OPTIONS = {
     "orientation": "landscape",
     "format": "A4",
     "header": {
-        "height": "15mm",
+        "height": "25mm",
     },
     "footer": {
         "height": "15mm",
+    },
+    border: {
+        top: '10px',
+        bottom: '10px',
     },
 }
 
@@ -24,10 +28,14 @@ const MONTHLY_REPORT_PDF_OPTIONS = {
     "orientation": "portrait",
     "format": "A4",
     "header": {
-        "height": "15mm",
+        "height": "25mm",
     },
     "footer": {
         "height": "15mm",
+    },
+    border: {
+        top: '10px',
+        bottom: '10px',
     },
 }
 
