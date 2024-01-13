@@ -51,7 +51,7 @@ const RECEIVING_ENTITY = {
 
 // Define named cron jobs
 const CRON_JOBS = {
-    MONDAY_MORNING: '0 30 5 * * 1',
+    MONDAY_MORNING: '0 6 * * 1',
     FRIDAY_EVENING: '0 18 * * 5',
     MONTHLY: '0 19 28 * *',
     EVERY_THIRTY_MINS: '*/30 * * * *',
