@@ -5,8 +5,8 @@
     },
 
     "weeklyMailingOptions": {
-        "to": [{"name": "Katy", "email": "katy.shi@yageo.com"}],
-        "cc": [{"name": "Sudheer", "email": "sudheer.varma@yageo.com"}, {"name": "Ravi", "email": "ravindra.ruttala@yageo.com"}],
+        "to": [{"name": "Katy Shi", "email": "katy.shi@yageo.com"}],
+        "cc": [{"name": "Sudheer Verma", "email": "sudheer.varma@yageo.com"}, {"name": "Ravindra Ruttala", "email": "ravindra.ruttala@yageo.com"}],
         "sender": { "name": "HR", "email": "hrm.in@sargainc.com" }
     },
 
