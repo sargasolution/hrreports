@@ -1,6 +1,6 @@
 {
     "fridayMailingOptions": {
-        "to": [{"email": "sandeep.reddy@yageo.com"}],
+        "to": [{"email": "sargahyd@gmail.com"}],
         "sender": { "name": "HR", "email": "hrm.in@sargainc.com" },
         "textContent": "Hello,\n Please find the weekly time management reports in the below attachments."
     },
