@@ -19,9 +19,9 @@ class ReportingCron {
                 return;
                 // Calculate last week's start and end dates
                 const today = new Date();
-                const lastMonday = subDays(today, 7);
-                const startDate = startOfWeek(lastMonday);
-                const endDate = endOfWeek(lastMonday);
+                const lastWeekDay = subDays(today, 4);
+                const startDate = startOfWeek(lastWeekDay);
+                const endDate = endOfWeek(lastWeekDay);
 
                 await EmployeePunchService.generateWeeklyPunchReportsAndExcel(startDate, endDate);
                 await EmailCommunication.sendWeeklyTransacionalMailToClient(startDate, endDate);

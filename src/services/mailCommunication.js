@@ -2,7 +2,7 @@ const SibApiV3Sdk = require('@getbrevo/brevo');
 const fs = require("fs/promises")
 const path = require("path")
 const EmployeeUtils = require("../utils/employeeUtils");
-const { FILE_EXTENSIONS } = require("../constants/enums/employeeEnums");
+const { FILE_EXTENSIONS, WEEKLY_MAILING_TEXT_CONTENT, MONTHLY_MAILING_TEXT_CONTENT } = require("../constants/enums/employeeEnums");
 const logger = require('../config/logger');
 const { format, getYear } = require("date-fns");
 
@@ -33,21 +33,27 @@ class EmailCommunication {
                 this.sendSmtpEmail.cc = weeklyMailingOptions["cc"];
             }
 
-            this.sendSmtpEmail.textContent = weeklyMailingOptions["textContent"] || ".";
-            this.sendSmtpEmail.subject = `Weekly Time Management Report - ${format(startDate, "dd/MM/yyyy")} to ${format(endDate, "dd/MM/yyyy")} `;
+            const formattedStartDate = format(startDate, "dd/MM/yyyy");
+            const formattedEndDate = format(endDate, "dd/MM/yyyy");
 
-            // extract excel file name
-            const excelFileName = EmployeeUtils.parseWeeklyReportFileName(startDate, endDate, FILE_EXTENSIONS.EXCEL);
-            // read data from excel file at the destination path
-            const excelFileData = await fs.readFile(path.resolve(__dirname, "..", "public", "reports", excelFileName));
+            this.sendSmtpEmail.textContent = WEEKLY_MAILING_TEXT_CONTENT(formattedStartDate, formattedEndDate);
+
+            this.sendSmtpEmail.subject = `Weekly Time Management Report - ${formattedStartDate} to ${formattedEndDate} `;
+
+            // extract pdf file name
+            const pdfFileName = EmployeeUtils.parseWeeklyReportFileName(startDate, endDate, FILE_EXTENSIONS.PDF);
+
+            // read data from pdf file at the destination path
+            const pdfFileData = await fs.readFile(path.resolve(__dirname, "..", "public", "reports", pdfFileName));
+
             // convert buffer to proper format
-            const excelFileDataBuffer = await Buffer.from(excelFileData).toString('base64');
+            const pdfFileDataBuffer = await Buffer.from(pdfFileData).toString('base64');
 
-            if (excelFileData) {
+            if (pdfFileData) {
                 this.sendSmtpEmail.attachment = [
                     {
-                        content: excelFileDataBuffer,
-                        name: excelFileName,
+                        content: pdfFileDataBuffer,
+                        name: pdfFileName,
                     }
                 ];
                 await this.apiInstance.sendTransacEmail(this.sendSmtpEmail);
@@ -79,8 +85,12 @@ class EmailCommunication {
                 this.sendSmtpEmail.cc = fridayMailingOptions["cc"];
             }
 
-            this.sendSmtpEmail.textContent = fridayMailingOptions["textContent"] || ".";
-            this.sendSmtpEmail.subject = `Weekly Time Management Report - ${format(startDate, "dd/MM/yyyy")} to ${format(endDate, "dd/MM/yyyy")} `;
+            const formattedStartDate = format(startDate, "dd/MM/yyyy");
+            const formattedEndDate = format(endDate, "dd/MM/yyyy");
+
+            this.sendSmtpEmail.textContent = WEEKLY_MAILING_TEXT_CONTENT(formattedStartDate, formattedEndDate);
+
+            this.sendSmtpEmail.subject = `Weekly Time Management Report - ${formattedStartDate} to ${formattedEndDate} `;
 
             // extract pdf file name
             const pdfFileName = EmployeeUtils.parseWeeklyReportFileName(startDate, endDate, FILE_EXTENSIONS.PDF);
@@ -136,20 +146,28 @@ class EmailCommunication {
                 this.sendSmtpEmail.cc = monthlyMailingOptions["cc"];
             }
 
-            this.sendSmtpEmail.textContent = monthlyMailingOptions["textContent"] || ".";
-            this.sendSmtpEmail.subject = `Monthly Time Management Report - ${format(endDate, "MMM")}, ${getYear(endDate)}`;
+            const formattedMonthName = format(endDate, "MMM");
+            const formattedYear = getYear(endDate);
+
+            this.sendSmtpEmail.textContent = MONTHLY_MAILING_TEXT_CONTENT(formattedMonthName, formattedYear);
+
+            this.sendSmtpEmail.subject = `Monthly Time Management Report - ${formattedMonthName}, ${formattedYear}`;
 
             // extract pdf file name
             const pdfFileName = EmployeeUtils.parseMonthlyReportFileName(endDate, FILE_EXTENSIONS.PDF);
+
             // read data from pdf file at the destination path
             const pdfFileData = await fs.readFile(path.resolve(__dirname, "..", "public", "reports", pdfFileName));
+
             // convert buffer to proper format
             const pdfFileDataBuffer = await Buffer.from(pdfFileData).toString('base64');
 
             // extract excel file name
             const excelFileName = EmployeeUtils.parseMonthlyReportFileName(endDate, FILE_EXTENSIONS.EXCEL);
+
             // read data from excel file at the destination path
             const excelFileData = await fs.readFile(path.resolve(__dirname, "..", "public", "reports", excelFileName));
+
             // convert buffer to proper format
             const excelFileDataBuffer = await Buffer.from(excelFileData).toString('base64');
 
