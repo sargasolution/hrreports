@@ -38,7 +38,7 @@ class EmailCommunication {
 
             this.sendSmtpEmail.textContent = WEEKLY_MAILING_TEXT_CONTENT(formattedStartDate, formattedEndDate);
 
-            this.sendSmtpEmail.subject = `Weekly Time Management Report - ${formattedStartDate} to ${formattedEndDate} `;
+            this.sendSmtpEmail.subject = `Weekly Timesheet - ${formattedStartDate} to ${formattedEndDate} `;
 
             // extract pdf file name
             const pdfFileName = EmployeeUtils.parseWeeklyReportFileName(startDate, endDate, FILE_EXTENSIONS.PDF);
@@ -90,7 +90,7 @@ class EmailCommunication {
 
             this.sendSmtpEmail.textContent = WEEKLY_MAILING_TEXT_CONTENT(formattedStartDate, formattedEndDate);
 
-            this.sendSmtpEmail.subject = `Weekly Time Management Report - ${formattedStartDate} to ${formattedEndDate} `;
+            this.sendSmtpEmail.subject = `Weekly Timesheet - ${formattedStartDate} to ${formattedEndDate} `;
 
             // extract pdf file name
             const pdfFileName = EmployeeUtils.parseWeeklyReportFileName(startDate, endDate, FILE_EXTENSIONS.PDF);
@@ -151,7 +151,7 @@ class EmailCommunication {
 
             this.sendSmtpEmail.textContent = MONTHLY_MAILING_TEXT_CONTENT(formattedMonthName, formattedYear);
 
-            this.sendSmtpEmail.subject = `Monthly Time Management Report - ${formattedMonthName}, ${formattedYear}`;
+            this.sendSmtpEmail.subject = `Monthly Timesheet - ${formattedMonthName}, ${formattedYear}`;
 
             // extract pdf file name
             const pdfFileName = EmployeeUtils.parseMonthlyReportFileName(endDate, FILE_EXTENSIONS.PDF);
