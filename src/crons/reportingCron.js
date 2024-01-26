@@ -33,7 +33,8 @@ class ReportingCron {
                 logger.error(err);
             }
         }, {
-            runOnInit: false
+            runOnInit: false,
+            timezone: 'Asia/Kolkata'
         });
 
 
@@ -58,7 +59,8 @@ class ReportingCron {
                 logger.error(err);
             }
         }, {
-            runOnInit: false
+            runOnInit: false,
+            timezone: 'Asia/Kolkata'
         });
 
 
@@ -83,7 +85,8 @@ class ReportingCron {
                 logger.error(err);
             }
         }, {
-            runOnInit: false
+            runOnInit: false,
+            timezone: 'Asia/Kolkata'
         });
     }
 }
