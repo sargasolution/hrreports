@@ -16,10 +16,10 @@
     "weeklyMailingOptions": {
         "to": [
             {
-                "email": "rohit.umavane@yageo.com"
+                "email": "sudheer.varma@yageo.com"
             },
             {
-                "email": "sudheer.varma@yageo.com"
+                "email": "rohit.umavane@yageo.com"
             },
             {
                 "email": "sandeep.reddy@yageo.com"
@@ -30,7 +30,7 @@
         ],
         "cc": [
             {
-                "email": "sudheer.varma@yageo.com"
+                "email": "katy.shi@yageo.com"
             },
             {
                 "email": "kumar@sargainc.com"
