@@ -1,7 +1,7 @@
 const { startOfMonth, parse } = require('date-fns');
 const EmployeePunchService = require("../services/employeePunch");
 const EmailCommunication = require("../services/mailCommunication");
-const logger = require('../config/logger.js');
+const logger = require('../config/logger');
 const EmployeeUtils = require("../utils/employeeUtils");
 
 class ReportingController {

@@ -97,6 +97,12 @@ class EmployeeUtils {
         return daysDifference;
     };
 
+    static calculateEmployeeSalary(totalMinutesWorked, perHourCharges) {
+        const hrs = Math.floor(totalMinutesWorked / 60)
+        const mins = totalMinutesWorked % 60;
+        return Math.round(hrs * perHourCharges + (mins / 60 * perHourCharges));
+    }
+
 }
 
 

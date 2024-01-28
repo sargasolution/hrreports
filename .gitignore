@@ -3,3 +3,4 @@
 *.DS_Store
 **/logs/
 /src/public/reports/
+/src/config/json/

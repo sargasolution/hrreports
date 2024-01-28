@@ -6,6 +6,7 @@ const FileGenerationService = require("../services/fileGeneration");
 const { EmployeeWeeklyPunchEntity, EmployeeMonthlyPunchEntity } = require("../constants/models/employee");
 const { DEFAULT_IN_OUT_TIME, WEEKLY_REPORT_PDF_OPTIONS, MONTHLY_REPORT_PDF_OPTIONS, FILE_EXTENSIONS, ENCODED_IMAGES } = require("../constants/enums/employeeEnums");
 const logger = require("../config/logger");
+const ExcelSheetReader = require("./excelSheet");
 
 class EmployeePunchService {
     static async generateWeeklyPunchReportsAndExcel(startDate, endDate) {
@@ -43,7 +44,7 @@ class EmployeePunchService {
                     if (punch.DateString in employeePunchInfo[punch.Empcode].punchData) {
                         employeePunchInfo[punch.Empcode].punchData[punch.DateString].INTime = punch.INTime;
                         employeePunchInfo[punch.Empcode].punchData[punch.DateString].OUTTime = punch.OUTTime;
-                        employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMinsShow = "0"
+
                         if (punch.INTime && punch.INTime !== DEFAULT_IN_OUT_TIME && punch.OUTTime && punch.OUTTime !== DEFAULT_IN_OUT_TIME) {
                             const date1 = parse(punch.INTime, 'HH:mm', new Date());
                             const date2 = parse(punch.OUTTime, 'HH:mm', new Date());
@@ -53,8 +54,6 @@ class EmployeePunchService {
                             if (minutesDifference >= 0) {
                                 employeePunchInfo[punch.Empcode].totalMinsWorked += minutesDifference;
                             }
-                        } else {
-                            employeePunchInfo[punch.Empcode].punchData[punch.DateString].WorkTimeInMins = 0;
                         }
                     }
                 })
@@ -105,6 +104,7 @@ class EmployeePunchService {
 
     static async generateMonthlyReportAndExcel(startDate, endDate) {
         try {
+            const employeePerHourRates = await ExcelSheetReader.authenticateUserAndMapExcelData();
             const formattedStartDate = format(startDate, 'dd/MM/yyyy');
             const formattedEndDate = format(endDate, 'dd/MM/yyyy');
 
@@ -126,7 +126,7 @@ class EmployeePunchService {
 
                 arrOfPunchData.forEach((punch) => {
                     if (!(punch.Empcode in employeePunchInfo)) {
-                        employeePunchInfo[punch.Empcode] = new EmployeeMonthlyPunchEntity(punch.Name)
+                        employeePunchInfo[punch.Empcode] = new EmployeeMonthlyPunchEntity(punch.Name, employeePerHourRates[punch.Empcode])
                     }
                     if (punch.INTime && punch.INTime !== DEFAULT_IN_OUT_TIME && punch.OUTTime && punch.OUTTime !== DEFAULT_IN_OUT_TIME) {
                         const date1 = parse(punch.INTime, 'HH:mm', new Date());
@@ -141,8 +141,9 @@ class EmployeePunchService {
                 for (let key in employeePunchInfo) {
                     const punchObj = employeePunchInfo[key]
                     punchObj.totalMinsWorkedShow = EmployeeUtils.parseMinutesToHoursDuration(punchObj.totalMinsWorked)
-                }
 
+                    punchObj.totalAmount = EmployeeUtils.calculateEmployeeSalary(punchObj.totalMinsWorked, punchObj.pricePerHour);
+                }
 
                 const templatePath = path.join(__dirname, '..', 'views', 'reports', 'monthly.ejs');
 
@@ -167,7 +168,8 @@ class EmployeePunchService {
                 await FileGenerationService.generateMonthlyXlsx(Object.values(employeePunchInfo), excelDestinationPath, {
                     columns: [
                         { header: 'Employee Name', key: 'name', width: 50 },
-                        { header: 'Hrs', key: 'totalMinsWorkedShow', width: 10 },
+                        { header: 'Hrs', key: 'totalMinsWorkedShow', width: 20 },
+                        { header: 'Amount USD $', key: 'totalAmount', width: 20 },
                     ],
                     sheetName: `${format(endDate, 'MMM')}, ${format(endDate, 'yyyy')}`
                 });

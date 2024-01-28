@@ -68,6 +68,13 @@ const WEEKLY_MAILING_TEXT_CONTENT = (startDate, endDate, isWeek = true) => `Time
 
 const MONTHLY_MAILING_TEXT_CONTENT = (monthName, year) => `Timesheet for the month ${monthName}, ${year}. \n --------------------------------------------- \n \n Powered By TeamOffice \n \n Disclaimer: This email and any files transmitted with it are confidential and intended solely for the use of the individual or entity to whom they are addressed.`
 
+
+
+const GOOGLE_SHEET_SCOPES = [
+    'https://www.googleapis.com/auth/spreadsheets',
+];
+
+
 module.exports = {
     DEFAULT_IN_OUT_TIME,
     WEEKLY_REPORT_PDF_OPTIONS,
@@ -77,5 +84,6 @@ module.exports = {
     CRON_JOBS,
     ENCODED_IMAGES,
     WEEKLY_MAILING_TEXT_CONTENT,
-    MONTHLY_MAILING_TEXT_CONTENT
+    MONTHLY_MAILING_TEXT_CONTENT,
+    GOOGLE_SHEET_SCOPES
 }
