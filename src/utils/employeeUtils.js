@@ -67,8 +67,8 @@ class EmployeeUtils {
     }
 
     static parseWeeklyReportFileName(startDate, endDate, fileExtension = 'pdf') {
-        const formattedStartDate = format(startDate, 'dd_MM_yyyy');
-        const formattedEndDate = format(endDate, 'dd_MM_yyyy');
+        const formattedStartDate = format(startDate, 'MM_dd_yyyy');
+        const formattedEndDate = format(endDate, 'MM_dd_yyyy');
         return `${formattedStartDate}_to_${formattedEndDate}__time_management.${fileExtension}`
     }
 
@@ -77,7 +77,7 @@ class EmployeeUtils {
     }
 
     static parseExcelSheetName(startDate, endDate) {
-        return `${format(startDate, "dd-MM-yyyy")} to ${format(endDate, "dd-MM-yyyy")}`
+        return `${format(startDate, "MM-dd-yyyy")} to ${format(endDate, "MM-dd-yyyy")}`
     }
 
     static getDayOfWeek(formattedDate) {

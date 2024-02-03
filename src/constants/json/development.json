@@ -1,14 +1,56 @@
 {
     "fridayMailingOptions": {
-        "to": [{"name": "Dibya Mohan Acharya", "email": "mohandibya.acharya@gmail.com"}],
-        "sender": { "name": "Dibya Mohan Acharya", "email": "mohandibya123@gmail.com" }
+        "to": [
+            {
+                "name": "Dibya Mohan Acharya",
+                "email": "mohandibya.acharya@gmail.com"
+            }
+        ],
+        "sender": {
+            "name": "Dibya Mohan Acharya",
+            "email": "mohandibya123@gmail.com"
+        },
+        "cc": [
+            {
+                "name": "Dibya Mohan Acharya",
+                "email": "mohandibya123@gmail.com"
+            }
+        ]
     },
     "weeklyMailingOptions": {
-        "to": [{"name": "Dibya Mohan Acharya", "email": "mohandibya.acharya@gmail.com"}],
-        "sender": { "name": "Dibya Mohan Acharya", "email": "mohandibya123@gmail.com" }
+        "to": [
+            {
+                "name": "Dibya Mohan Acharya",
+                "email": "mohandibya.acharya@gmail.com"
+            }
+        ],
+        "sender": {
+            "name": "Dibya Mohan Acharya",
+            "email": "mohandibya123@gmail.com"
+        },
+        "cc": [
+            {
+                "name": "Dibya Mohan Acharya",
+                "email": "mohandibya123@gmail.com"
+            }
+        ]
     },
     "monthlyMailingOptions": {
-        "to": [{"name": "Dibya Mohan Acharya", "email": "mohandibya.acharya@gmail.com"}],
-        "sender": { "name": "Dibya Mohan Acharya", "email": "mohandibya123@gmail.com" }
+        "to": [
+            {
+                "name": "Dibya Mohan Acharya",
+                "email": "mohandibya.acharya@gmail.com"
+            }
+        ],
+        "sender": {
+            "name": "Dibya Mohan Acharya",
+            "email": "mohandibya123@gmail.com"
+        },
+        "cc": [
+            {
+                "name": "Dibya Mohan Acharya",
+                "email": "mohandibya123@gmail.com"
+            }
+        ]
     }
 }

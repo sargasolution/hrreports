@@ -88,7 +88,7 @@ class FileGenerationService {
 
                     // Set the attributes only for date headers
                     if (index < arr.length - 1) {
-                        cell.value = `${dateHeader} \n ${format(parse(dateHeader, 'dd/MM/yyyy', new Date()), 'EEEE')}`;
+                        cell.value = `${dateHeader} \n ${format(parse(dateHeader, 'MM/dd/yyyy', new Date()), 'EEEE')}`;
                         const endCol = startCol + 2;   // Ending column for the current date
                         worksheet.mergeCells(1, startCol, 1, endCol);
                         cell.alignment = { horizontal: 'center' };  // Center align the text
@@ -124,7 +124,7 @@ class FileGenerationService {
 
                 // Loop through each date
                 for (let punchDate of dateColumnHeaders) {
-                    const dateData = employee.punchData[punchDate];
+                    const dateData = employee.punchData[format(parse(punchDate, 'MM/dd/yyyy', new Date()), 'dd/MM/yyyy')];
                     // Add IN, OUT, Hrs for each date
                     rowData.push(dateData.INTime, dateData.OUTTime, dateData.WorkTimeInMinsShow);
                 }

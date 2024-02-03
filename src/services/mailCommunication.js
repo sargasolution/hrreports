@@ -33,8 +33,8 @@ class EmailCommunication {
                 this.sendSmtpEmail.cc = weeklyMailingOptions["cc"];
             }
 
-            const formattedStartDate = format(startDate, "dd/MM/yyyy");
-            const formattedEndDate = format(endDate, "dd/MM/yyyy");
+            const formattedStartDate = format(startDate, "MM/dd/yyyy");
+            const formattedEndDate = format(endDate, "MM/dd/yyyy");
 
             this.sendSmtpEmail.textContent = WEEKLY_MAILING_TEXT_CONTENT(formattedStartDate, formattedEndDate);
 
@@ -85,8 +85,8 @@ class EmailCommunication {
                 this.sendSmtpEmail.cc = fridayMailingOptions["cc"];
             }
 
-            const formattedStartDate = format(startDate, "dd/MM/yyyy");
-            const formattedEndDate = format(endDate, "dd/MM/yyyy");
+            const formattedStartDate = format(startDate, "MM/dd/yyyy");
+            const formattedEndDate = format(endDate, "MM/dd/yyyy");
 
             this.sendSmtpEmail.textContent = WEEKLY_MAILING_TEXT_CONTENT(formattedStartDate, formattedEndDate);
 

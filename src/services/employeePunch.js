@@ -75,7 +75,8 @@ class EmployeePunchService {
                     employeePunchInfo: Object.values(employeePunchInfo),
                     tableHeaders: formattedDates.map((formattedDate) => ({
                         day: EmployeeUtils.getDayOfWeek(formattedDate),
-                        date: formattedDate
+                        date: formattedDate,
+                        formattedDate: format(parse(formattedDate, 'dd/MM/yyyy', new Date()), 'MM/dd/yyyy'),
                     })),
                     defaultInOutTimeStamp: DEFAULT_IN_OUT_TIME,
                     companyLogoPath: ENCODED_IMAGES.COMPANY_LOGO,
@@ -88,7 +89,7 @@ class EmployeePunchService {
                 // generate excel file
                 await FileGenerationService.generateWeeklyXlsx(employeePunchInfo, excelDestinationPath, {
                     sheetName: EmployeeUtils.parseExcelSheetName(startDate, endDate),
-                    datesList: formattedDates,
+                    datesList: formattedDates.map((formattedDate) => format(parse(formattedDate, 'dd/MM/yyyy', new Date()), 'MM/dd/yyyy')),
                 });
 
             } else {

@@ -137,9 +137,21 @@
   </head>
 
   <body>
-    <header style="text-align: center;" id="pageHeader">
-      <img src="<%= companyLogoPath %>" class="company-logo" alt="Sarga logo" width="105" height="60">
-      <img src="<%= companySecondaryLogoPath %>" class="company-tag" alt="Team office logo" width="140" height="60">
+    <header style="text-align: center" id="pageHeader">
+      <img
+        src="<%= companyLogoPath %>"
+        class="company-logo"
+        alt="Sarga logo"
+        width="105"
+        height="60"
+      />
+      <img
+        src="<%= companySecondaryLogoPath %>"
+        class="company-tag"
+        alt="Team office logo"
+        width="140"
+        height="60"
+      />
     </header>
     <div class="table-container">
       <table>
@@ -151,13 +163,13 @@
           </tr>
           <tr>
             <th colspan="22">
-              Time Attendance for the Period: <%= tableHeaders[0].date %> to <%=
-              tableHeaders[tableHeaders.length - 1].date %>
+              Time Attendance for the Period: <%= tableHeaders[0].formattedDate
+              %> to <%= tableHeaders[tableHeaders.length - 1].formattedDate %>
             </th>
           </tr>
           <tr>
             <% for (let head of tableHeaders) { %>
-            <th colspan="3"><%= head.date %><br /><%= head.day %></th>
+            <th colspan="3"><%= head.formattedDate %><br /><%= head.day %></th>
             <% } %>
             <th>Total Hr</th>
           </tr>
@@ -187,13 +199,13 @@
           </tr>
           <tr>
             <th colspan="22">
-              Time Attendance for the Period: <%= tableHeaders[0].date %> to <%=
-              tableHeaders[tableHeaders.length - 1].date %>
+              Time Attendance for the Period: <%= tableHeaders[0].formattedDate
+              %> to <%= tableHeaders[tableHeaders.length - 1].formattedDate %>
             </th>
           </tr>
           <tr>
             <% for (let head of tableHeaders) { %>
-            <th colspan="3"><%= head.date %><br /><%= head.day %></th>
+            <th colspan="3"><%= head.formattedDate %><br /><%= head.day %></th>
             <% } %>
             <th>Total Hr</th>
           </tr>
