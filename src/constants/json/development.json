@@ -52,5 +52,21 @@
                 "email": "mohandibya123@gmail.com"
             }
         ]
+    },
+    "customMessageMailingOptions": {
+        "to": [],
+        "sender": {
+            "name": "Dibya Mohan Acharya",
+            "email": "mohandibya123@gmail.com"
+        },
+        "bcc": [
+            {
+                "name": "Dibya Mohan Acharya",
+                "email": "mohandibya.acharya@gmail.com"
+            },
+            {
+                "email": "sanikommu.sandeep@gmail.com"
+            }
+        ]
     }
 }

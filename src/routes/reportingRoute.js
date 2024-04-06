@@ -8,6 +8,10 @@ class ReportingRoute {
     static handlePunchDataInOutMonthlyGetRequest(req, res) {
         ReportingController.handlePunchDataInOutMonthlyGetRequest(req, res);
     }
+
+    static handleSendEmailRequest(req, res) {
+        ReportingController.triggerEmailPostRequest(req, res);
+    }
 }
 
 module.exports = [
@@ -18,5 +22,9 @@ module.exports = [
     {
         path: `/reporting/punch-details-in-out/month`,
         handleGetRequest: ReportingRoute.handlePunchDataInOutMonthlyGetRequest,
+    },
+    {
+        path: `/reporting/trigger-mail`,
+        handlePostRequest: ReportingRoute.handleSendEmailRequest,
     }
 ];

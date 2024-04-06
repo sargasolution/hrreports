@@ -67,5 +67,68 @@
                 "email": "hrm.in@sargainc.com"
             }
         ]
+    },
+    "customMessageMailingOptions": {
+        "to": [],
+        "sender": {
+            "name": "HR",
+            "email": "hrm.in@sargainc.com"
+        },
+        "bcc": [
+            {
+                "email": "victor.li@yageo.com"
+            },
+            {
+                "email": "aimee.liu@yageo.com"
+            },
+            {
+                "email": "srinivasulu.balagoni@yageo.com"
+            },
+            {
+                "email": "betty.ye@yageo.com"
+            },
+            {
+                "email": "forest.law@yageo.com"
+            },
+            {
+                "email": "hugo.shi@yageo.com"
+            },
+            {
+                "email": "joyce.gu@yageo.com"
+            },
+            {
+                "email": "ken.cheng@yageo.com"
+            },
+            {
+                "email": "mj.pang@yageo.com"
+            },
+            {
+                "email": "sandeep.reddy@yageo.com"
+            },
+            {
+                "email": "ravindra.ruttala@yageo.com"
+            },
+            {
+                "email": "randy.stetz@yageo.com"
+            },
+            {
+                "email": "rohit.umavane@yageo.com"
+            },
+            {
+                "email": "sudheer.varma@yageo.com"
+            },
+            {
+                "email": "vera.lee@yageo.com"
+            },
+            {
+                "email": "katy.shi@yageo.com"
+            },
+            {
+                "email": "christoph.schuerz@yageo.com"
+            },
+            {
+                "email": "kumar@sargainc.com"
+            }
+        ]
     }
 }

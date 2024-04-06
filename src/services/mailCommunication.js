@@ -2,7 +2,7 @@ const SibApiV3Sdk = require('@getbrevo/brevo');
 const fs = require("fs/promises")
 const path = require("path")
 const EmployeeUtils = require("../utils/employeeUtils");
-const { FILE_EXTENSIONS, WEEKLY_MAILING_TEXT_CONTENT, MONTHLY_MAILING_TEXT_CONTENT } = require("../constants/enums/employeeEnums");
+const { FILE_EXTENSIONS, WEEKLY_MAILING_TEXT_CONTENT, MONTHLY_MAILING_TEXT_CONTENT, CUSTOM_MAILING_TEXT_CONTENT } = require("../constants/enums/employeeEnums");
 const logger = require('../config/logger');
 const { format, getYear } = require("date-fns");
 
@@ -191,6 +191,32 @@ class EmailCommunication {
             logger.error(err);
             throw err
         }
+    }
+
+    async sendCustomMailToCompany(message, forceSendDev = false) {
+        const mailContent = CUSTOM_MAILING_TEXT_CONTENT(message);
+
+        // extract mailimg options from json
+        const mailConfigBuffer = await fs.readFile(path.resolve(__dirname, "..", "constants", "json", `${forceSendDev ? 'development' : process.env.NODE_ENV}.json`), 'utf8');
+        const mailConfig = JSON.parse(mailConfigBuffer);
+        const customMailingOptions = mailConfig["customMessageMailingOptions"]
+
+        // associate options to email body
+        this.sendSmtpEmail.sender = customMailingOptions["sender"];
+
+        if (Array.isArray(customMailingOptions["to"]) && customMailingOptions["to"].length) {
+            this.sendSmtpEmail.to = customMailingOptions["to"];
+        }
+
+        if (Array.isArray(customMailingOptions["bcc"]) && customMailingOptions["bcc"].length) {
+            this.sendSmtpEmail.bcc = customMailingOptions["bcc"];
+        }
+
+        this.sendSmtpEmail.subject = `HOLIDAY NOTICE India Office`;
+
+        this.sendSmtpEmail.textContent = mailContent;
+
+        await this.apiInstance.sendTransacEmail(this.sendSmtpEmail);
     }
 }
 

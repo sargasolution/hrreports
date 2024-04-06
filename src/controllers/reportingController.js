@@ -96,6 +96,27 @@ class ReportingController {
             });
         }
     }
+
+    static async triggerEmailPostRequest(req, res) {
+        try {
+            const { message, forceSendDev } = req.body;
+            if (!message) {
+                return res.status(400).json({
+                    message: "Please provide a proper mail body"
+                })
+            }
+            await EmailCommunication.sendCustomMailToCompany(message, forceSendDev);
+            res.json({
+                message: 'Mail sent to recipients successfully'
+            })
+        } catch (err) {
+            logger.error(err);
+            return res.status(400).json({
+                Msg: err?.message || "Failed to trigger mail",
+                Error: true
+            });
+        }
+    }
 }
 
 module.exports = ReportingController;

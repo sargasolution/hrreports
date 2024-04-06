@@ -74,6 +74,8 @@ const GOOGLE_SHEET_SCOPES = [
     'https://www.googleapis.com/auth/spreadsheets',
 ];
 
+const CUSTOM_MAILING_TEXT_CONTENT = (message) => `Kindly note India Office will be closed on the following mentioned dates.\n\n${message}\n\n---------------------------------------------\n\nPowered By TeamOffice\n\nDisclaimer: This email and any files transmitted with it are confidential and intended solely for the use of the individual or entity to whom they are addressed.`
+
 
 module.exports = {
     DEFAULT_IN_OUT_TIME,
@@ -85,5 +87,6 @@ module.exports = {
     ENCODED_IMAGES,
     WEEKLY_MAILING_TEXT_CONTENT,
     MONTHLY_MAILING_TEXT_CONTENT,
-    GOOGLE_SHEET_SCOPES
+    GOOGLE_SHEET_SCOPES,
+    CUSTOM_MAILING_TEXT_CONTENT
 }
