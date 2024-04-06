@@ -212,7 +212,7 @@ class EmailCommunication {
             this.sendSmtpEmail.bcc = customMailingOptions["bcc"];
         }
 
-        this.sendSmtpEmail.subject = `HOLIDAY NOTICE India Office`;
+        this.sendSmtpEmail.subject = `India Office HOLIDAY NOTICE`;
 
         this.sendSmtpEmail.textContent = mailContent;
 
