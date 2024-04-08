@@ -202,21 +202,18 @@ class EmailCommunication {
         const customMailingOptions = mailConfig["customMessageMailingOptions"]
 
         // associate options to email body
-        this.sendSmtpEmail.sender = customMailingOptions["sender"];
-
-        if (Array.isArray(customMailingOptions["to"]) && customMailingOptions["to"].length) {
-            this.sendSmtpEmail.to = customMailingOptions["to"];
-        }
+        const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail()
+        sendSmtpEmail.sender = customMailingOptions["sender"];
 
         if (Array.isArray(customMailingOptions["bcc"]) && customMailingOptions["bcc"].length) {
-            this.sendSmtpEmail.bcc = customMailingOptions["bcc"];
+            sendSmtpEmail.bcc = customMailingOptions["bcc"];
         }
 
-        this.sendSmtpEmail.subject = `India Office HOLIDAY NOTICE`;
+        sendSmtpEmail.subject = `India Office HOLIDAY NOTICE`;
 
-        this.sendSmtpEmail.textContent = mailContent;
+        sendSmtpEmail.textContent = mailContent;
 
-        await this.apiInstance.sendTransacEmail(this.sendSmtpEmail);
+        await this.apiInstance.sendTransacEmail(sendSmtpEmail);
     }
 }
 
