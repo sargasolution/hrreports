@@ -11,7 +11,6 @@ class EmailCommunication {
     constructor() {
         this.apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
         this.apiInstance.authentications['apiKey'].apiKey = process.env.BREVO_MAIL_AUTH_KEY;
-        this.sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
     }
 
     async sendWeeklyTransacionalMailToClient(startDate, endDate, forceSendDev = false) {
@@ -22,23 +21,25 @@ class EmailCommunication {
             const mailConfig = JSON.parse(mailConfigBuffer);
             const weeklyMailingOptions = mailConfig["weeklyMailingOptions"]
 
+            const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
             // associate options to email body
-            this.sendSmtpEmail.sender = weeklyMailingOptions["sender"];
+            sendSmtpEmail.sender = weeklyMailingOptions["sender"];
 
             if (Array.isArray(weeklyMailingOptions["to"]) && weeklyMailingOptions["to"]?.length) {
-                this.sendSmtpEmail.to = weeklyMailingOptions["to"];
+                sendSmtpEmail.to = weeklyMailingOptions["to"];
             }
 
             if (Array.isArray(weeklyMailingOptions["cc"]) && weeklyMailingOptions["cc"].length) {
-                this.sendSmtpEmail.cc = weeklyMailingOptions["cc"];
+                sendSmtpEmail.cc = weeklyMailingOptions["cc"];
             }
 
             const formattedStartDate = format(startDate, "MM/dd/yyyy");
             const formattedEndDate = format(endDate, "MM/dd/yyyy");
 
-            this.sendSmtpEmail.textContent = WEEKLY_MAILING_TEXT_CONTENT(formattedStartDate, formattedEndDate);
+            sendSmtpEmail.textContent = WEEKLY_MAILING_TEXT_CONTENT(formattedStartDate, formattedEndDate);
 
-            this.sendSmtpEmail.subject = `Weekly Timesheet - ${formattedStartDate} to ${formattedEndDate} `;
+            sendSmtpEmail.subject = `Weekly Timesheet - ${formattedStartDate} to ${formattedEndDate} `;
 
             // extract pdf file name
             const pdfFileName = EmployeeUtils.parseWeeklyReportFileName(startDate, endDate, FILE_EXTENSIONS.PDF);
@@ -50,13 +51,13 @@ class EmailCommunication {
             const pdfFileDataBuffer = await Buffer.from(pdfFileData).toString('base64');
 
             if (pdfFileData) {
-                this.sendSmtpEmail.attachment = [
+                sendSmtpEmail.attachment = [
                     {
                         content: pdfFileDataBuffer,
                         name: pdfFileName,
                     }
                 ];
-                await this.apiInstance.sendTransacEmail(this.sendSmtpEmail);
+                await this.apiInstance.sendTransacEmail(sendSmtpEmail);
             } else {
                 throw new Error("No excel data could be read")
             }
@@ -74,23 +75,25 @@ class EmailCommunication {
             const mailConfig = JSON.parse(mailConfigBuffer);
             const fridayMailingOptions = mailConfig["fridayMailingOptions"]
 
+            const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
             // associate options to email body
-            this.sendSmtpEmail.sender = fridayMailingOptions["sender"];
+            sendSmtpEmail.sender = fridayMailingOptions["sender"];
 
             if (Array.isArray(fridayMailingOptions["to"]) && fridayMailingOptions["to"].length) {
-                this.sendSmtpEmail.to = fridayMailingOptions["to"];
+                sendSmtpEmail.to = fridayMailingOptions["to"];
             }
 
             if (Array.isArray(fridayMailingOptions["cc"]) && fridayMailingOptions["cc"].length) {
-                this.sendSmtpEmail.cc = fridayMailingOptions["cc"];
+                sendSmtpEmail.cc = fridayMailingOptions["cc"];
             }
 
             const formattedStartDate = format(startDate, "MM/dd/yyyy");
             const formattedEndDate = format(endDate, "MM/dd/yyyy");
 
-            this.sendSmtpEmail.textContent = WEEKLY_MAILING_TEXT_CONTENT(formattedStartDate, formattedEndDate);
+            sendSmtpEmail.textContent = WEEKLY_MAILING_TEXT_CONTENT(formattedStartDate, formattedEndDate);
 
-            this.sendSmtpEmail.subject = `Weekly Timesheet - ${formattedStartDate} to ${formattedEndDate} `;
+            sendSmtpEmail.subject = `Weekly Timesheet - ${formattedStartDate} to ${formattedEndDate} `;
 
             // extract pdf file name
             const pdfFileName = EmployeeUtils.parseWeeklyReportFileName(startDate, endDate, FILE_EXTENSIONS.PDF);
@@ -107,7 +110,7 @@ class EmailCommunication {
             const excelFileDataBuffer = await Buffer.from(excelFileData).toString('base64');
 
             if (pdfFileData && excelFileData) {
-                this.sendSmtpEmail.attachment = [
+                sendSmtpEmail.attachment = [
                     {
                         content: excelFileDataBuffer,
                         name: excelFileName,
@@ -117,7 +120,7 @@ class EmailCommunication {
                         name: pdfFileName
                     }
                 ];
-                await this.apiInstance.sendTransacEmail(this.sendSmtpEmail);
+                await this.apiInstance.sendTransacEmail(sendSmtpEmail);
             } else {
                 throw new Error("No excel and PDF data could be read")
             }
@@ -135,23 +138,25 @@ class EmailCommunication {
             const mailConfig = JSON.parse(mailConfigBuffer);
             const monthlyMailingOptions = mailConfig["monthlyMailingOptions"]
 
+            const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail()
+
             // associate options to email body
-            this.sendSmtpEmail.sender = monthlyMailingOptions["sender"];
+            sendSmtpEmail.sender = monthlyMailingOptions["sender"];
 
             if (Array.isArray(monthlyMailingOptions["to"]) && monthlyMailingOptions["to"].length) {
-                this.sendSmtpEmail.to = monthlyMailingOptions["to"];
+                sendSmtpEmail.to = monthlyMailingOptions["to"];
             }
 
             if (Array.isArray(monthlyMailingOptions["cc"]) && monthlyMailingOptions["cc"].length) {
-                this.sendSmtpEmail.cc = monthlyMailingOptions["cc"];
+                sendSmtpEmail.cc = monthlyMailingOptions["cc"];
             }
 
             const formattedMonthName = format(endDate, "MMM");
             const formattedYear = getYear(endDate);
 
-            this.sendSmtpEmail.textContent = MONTHLY_MAILING_TEXT_CONTENT(formattedMonthName, formattedYear);
+            sendSmtpEmail.textContent = MONTHLY_MAILING_TEXT_CONTENT(formattedMonthName, formattedYear);
 
-            this.sendSmtpEmail.subject = `Monthly Timesheet - ${formattedMonthName}, ${formattedYear}`;
+            sendSmtpEmail.subject = `Monthly Timesheet - ${formattedMonthName}, ${formattedYear}`;
 
             // extract pdf file name
             const pdfFileName = EmployeeUtils.parseMonthlyReportFileName(endDate, FILE_EXTENSIONS.PDF);
@@ -172,7 +177,7 @@ class EmailCommunication {
             const excelFileDataBuffer = await Buffer.from(excelFileData).toString('base64');
 
             if (pdfFileData && excelFileData) {
-                this.sendSmtpEmail.attachment = [
+                sendSmtpEmail.attachment = [
                     {
                         content: excelFileDataBuffer,
                         name: excelFileName,
@@ -182,7 +187,7 @@ class EmailCommunication {
                         name: pdfFileName
                     }
                 ];
-                await this.apiInstance.sendTransacEmail(this.sendSmtpEmail);
+                await this.apiInstance.sendTransacEmail(sendSmtpEmail);
             } else {
                 throw new Error("No excel and PDF data could be read")
             }
