@@ -207,18 +207,24 @@ class EmailCommunication {
         const customMailingOptions = mailConfig["customMessageMailingOptions"]
 
         // associate options to email body
-        const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail()
-        sendSmtpEmail.sender = customMailingOptions["sender"];
+        const requestArray = [];
 
-        if (Array.isArray(customMailingOptions["bcc"]) && customMailingOptions["bcc"].length) {
-            sendSmtpEmail.bcc = customMailingOptions["bcc"];
+
+        if (Array.isArray(customMailingOptions["to"]) && customMailingOptions["to"].length) {
+            const recipientList = customMailingOptions["to"];
+            for (const recipient of recipientList) {
+                const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+                sendSmtpEmail.sender = customMailingOptions["sender"];
+                sendSmtpEmail.to = [recipient];
+                sendSmtpEmail.subject = `India Office HOLIDAY NOTICE`;
+                sendSmtpEmail.textContent = mailContent;
+                requestArray.push(this.apiInstance.sendTransacEmail(sendSmtpEmail));
+            }
+        } else {
+            throw new Error("No recipients list found")
         }
 
-        sendSmtpEmail.subject = `India Office HOLIDAY NOTICE`;
-
-        sendSmtpEmail.textContent = mailContent;
-
-        await this.apiInstance.sendTransacEmail(sendSmtpEmail);
+        await Promise.allSettled(requestArray);
     }
 }
 
